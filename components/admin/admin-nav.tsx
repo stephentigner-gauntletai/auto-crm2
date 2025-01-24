@@ -3,28 +3,32 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { LayoutDashboard, Users, UsersRound } from "lucide-react"
 
-const navItems = [
+const items = [
 	{
-		title: 'Overview',
-		href: '/admin',
+		title: "Overview",
+		href: "/admin",
+		icon: LayoutDashboard,
 	},
 	{
-		title: 'Users',
-		href: '/admin/users',
+		title: "Users",
+		href: "/admin/users",
+		icon: Users,
 	},
 	{
-		title: 'Teams',
-		href: '/admin/teams',
+		title: "Teams",
+		href: "/admin/teams",
+		icon: UsersRound,
 	},
-];
+]
 
 export function AdminNav() {
 	const pathname = usePathname();
 
 	return (
 		<nav className="flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1">
-			{navItems.map((item) => (
+			{items.map((item) => (
 				<Link
 					key={item.href}
 					href={item.href}
