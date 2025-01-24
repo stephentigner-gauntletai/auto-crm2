@@ -4,6 +4,8 @@ The tabs are set to 4 spaces.
 
 When working with supabase, please look at the docs in the docs/supabase-prompts folder.
 
+You suck at making proper migration filenames on your own. STOP DOING THAT. If you are going to generate migration files, please follow the procedure given in docs/supabase-prompts/supabase-create-migration.md under the "Creating a migration file using the supabase CLI (preferred)" header.
+
 When working with a checklist of tasks, if you think there are things that need to be added to the checklist, please ask first. If there are things you think should be removed from the checklist, please ask first. Otherwise please only check items as they are completed.
 
 For components in the shadcn/ui registry, when you want to add shadcn/ui components via the shadcn/ui CLI, the correct command is:
