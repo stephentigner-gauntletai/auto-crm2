@@ -35,10 +35,10 @@ This plan outlines the development stages for implementing the core MVP features
 **Goal**: Enable secure access and basic user roles
 
 ### Authentication System
-- [ ] Set up Supabase authentication
+- [x] Set up Supabase authentication
 - [ ] Create login page
 - [ ] Implement protected routes
-- [ ] Add authentication context/provider
+- [x] Add authentication context/provider
 - [ ] Create basic user profile page
 
 ### Team Management Foundations
