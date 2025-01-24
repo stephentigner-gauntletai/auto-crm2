@@ -18,11 +18,11 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Set up database relationships
 
 ### Basic UI Framework
-- [ ] Initialize Next.js project with TypeScript
-- [ ] Set up shadcn/ui
-- [ ] Create basic layout components
-- [ ] Implement basic routing structure
-- [ ] Set up basic styling system
+- [x] Initialize Next.js project with TypeScript
+- [x] Set up shadcn/ui
+- [x] Create basic layout components
+- [x] Implement basic routing structure
+- [x] Set up basic styling system
 
 ### Initial Ticket List View
 - [ ] Create basic ticket list component
