@@ -19,6 +19,11 @@ export function Header() {
 							<Link href="/tickets" className="text-sm font-medium">
 								Tickets
 							</Link>
+							{profile?.role === 'admin' && (
+								<Link href="/admin" className="text-sm font-medium">
+									Admin
+								</Link>
+							)}
 							<Link href="/profile" className="text-sm font-medium">
 								Profile
 							</Link>

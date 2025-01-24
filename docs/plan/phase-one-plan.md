@@ -42,9 +42,9 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Create basic user profile page
 
 ### Team Management Foundations
-- [ ] Create roles table in database
+- [x] Create roles table in database (using enum in profiles table)
 - [ ] Implement basic role assignment
-- [ ] Create admin dashboard shell
+- [x] Create admin dashboard shell
 - [ ] Add user management interface for admins
 - [ ] Implement basic team creation
 
