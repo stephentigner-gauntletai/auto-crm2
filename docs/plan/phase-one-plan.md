@@ -55,7 +55,7 @@ This plan outlines the development stages for implementing the core MVP features
 
 ### Ticket Creation & Editing
 - [x] Create ticket creation form
-- [ ] Implement rich text editor for ticket descriptions
+- [x] Implement rich text editor for ticket descriptions
 - [ ] Add ticket update functionality
 - [ ] Implement ticket status management
 - [ ] Add internal notes functionality

@@ -16,7 +16,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import {
 	Select,
 	SelectContent,
@@ -93,10 +93,10 @@ export function CreateTicketForm({ teams, agents }: CreateTicketFormProps) {
 						<FormItem>
 							<FormLabel>Description</FormLabel>
 							<FormControl>
-								<Textarea
+								<RichTextEditor
+									value={field.value}
+									onChange={field.onChange}
 									placeholder="Enter ticket description"
-									className="min-h-[200px]"
-									{...field}
 								/>
 							</FormControl>
 							<FormMessage />
