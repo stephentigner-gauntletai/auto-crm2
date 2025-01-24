@@ -128,7 +128,7 @@ import './styles.css';
 - Use tabs for indentation (tab width: 4)
 - 100-character line length limit
 - Use semicolons
-- Use double quotes
+- Use single quotes
 - Use trailing commas in objects and arrays (es5)
 - Use spaces in brackets
 - Empty line between logical blocks

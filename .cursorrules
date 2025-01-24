@@ -12,3 +12,5 @@ For components in the shadcn/ui registry, when you want to add shadcn/ui compone
 npx shadcn@latest add <component>
 ```
 where `<component>` is the name of the component you want to add.
+
+`shadcn-ui` DOES NOT EXIST!! THE CORRECT COMMAND IS `shadcn`.
