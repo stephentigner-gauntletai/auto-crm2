@@ -1,4 +1,4 @@
- # Phase One Implementation Plan
+# Phase One Implementation Plan
 
 This plan outlines the development stages for implementing the core MVP features of AutoCRM. The plan is structured to deliver working functionality as early as possible, with incremental improvements.
 
@@ -6,16 +6,16 @@ This plan outlines the development stages for implementing the core MVP features
 **Goal**: Get a basic working system that displays tickets
 
 ### Database Setup
-- [ ] Set up Supabase project
-- [ ] Create initial tickets table with core fields:
+- [x] Set up Supabase project
+- [x] Create initial tickets table with core fields:
   - id
   - title
   - description
   - status
   - created_at
   - updated_at
-- [ ] Create basic users table
-- [ ] Set up database relationships
+- [x] Create basic users table
+- [x] Set up database relationships
 
 ### Basic UI Framework
 - [ ] Initialize Next.js project with TypeScript

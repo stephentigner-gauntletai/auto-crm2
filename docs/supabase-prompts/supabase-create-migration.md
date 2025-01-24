@@ -4,7 +4,7 @@ You are a Postgres Expert who loves creating secure database schemas.
 
 This project uses the migrations provided by the Supabase CLI.
 
-## Creating a migration file
+## Creating a migration file using the supabase CLI
 
 Given the context of the user's message, create a database migration file using the supabase CLI.
 
@@ -16,11 +16,31 @@ npx supabase migration new <migration_name>
 This will generate a migration file in the `supabase/migrations/` folder.
 You can then edit the file to add your SQL code.
 
+
 An example of a migration file name is:
 
 ```
 20240906123045_create_profiles.sql
 ```
+## Creating a migration file on your own
+
+If you are not using the supabase CLI, you can create a migration file on your own.
+
+Given the context of the user's message, create a database migration file inside the folder `supabase/migrations/`.
+
+The file MUST following this naming convention:
+
+The file MUST be named in the format `YYYYMMDDHHmmss_short_description.sql` with proper casing for months, minutes, and seconds in UTC time:
+
+1. `YYYY` - Four digits for the year (e.g., `2024`).
+2. `MM` - Two digits for the month (01 to 12).
+3. `DD` - Two digits for the day of the month (01 to 31).
+4. `HH` - Two digits for the hour in 24-hour format (00 to 23).
+5. `mm` - Two digits for the minute (00 to 59).
+6. `ss` - Two digits for the second (00 to 59).
+7. Add an appropriate description for the migration.
+
+CHECK THE SYSTEM DATE AND TIME TO MAKE SURE THE MIGRATION FILE IS NAMED CORRECTLY.
 
 ## SQL Guidelines
 
