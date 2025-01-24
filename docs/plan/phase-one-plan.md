@@ -39,7 +39,7 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Create login page
 - [x] Implement protected routes
 - [x] Add authentication context/provider
-- [ ] Create basic user profile page
+- [x] Create basic user profile page
 
 ### Team Management Foundations
 - [ ] Create roles table in database

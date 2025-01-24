@@ -19,6 +19,9 @@ export function Header() {
 							<Link href="/tickets" className="text-sm font-medium">
 								Tickets
 							</Link>
+							<Link href="/profile" className="text-sm font-medium">
+								Profile
+							</Link>
 							<span className="text-sm text-muted-foreground">
 								{profile?.email}
 							</span>
