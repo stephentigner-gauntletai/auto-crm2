@@ -136,7 +136,9 @@ export type Database = {
           created_by: string
           description: string
           id: string
+          internal_notes: string | null
           status: string
+          team_id: string | null
           title: string
           updated_at: string
         }
@@ -146,7 +148,9 @@ export type Database = {
           created_by: string
           description: string
           id?: string
+          internal_notes?: string | null
           status?: string
+          team_id?: string | null
           title: string
           updated_at?: string
         }
@@ -156,7 +160,9 @@ export type Database = {
           created_by?: string
           description?: string
           id?: string
+          internal_notes?: string | null
           status?: string
+          team_id?: string | null
           title?: string
           updated_at?: string
         }
@@ -173,6 +179,13 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tickets_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
             referencedColumns: ["id"]
           },
         ]
