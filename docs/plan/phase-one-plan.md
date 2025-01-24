@@ -46,7 +46,9 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Implement basic role assignment
 - [x] Create admin dashboard shell
 - [x] Add user management interface for admins
-- [ ] Implement basic team creation
+- [x] Implement basic team creation
+- [x] Add team member management
+- [x] Add team editing functionality
 
 ## Stage 3: Ticket Management & Interaction
 **Goal**: Enable full ticket lifecycle management

@@ -1,6 +1,6 @@
 import * as z from "zod"
 
-export const createTeamSchema = z.object({
+const teamSchema = z.object({
 	name: z
 		.string()
 		.min(2, { message: "Team name must be at least 2 characters" })
@@ -9,4 +9,7 @@ export const createTeamSchema = z.object({
 		.string()
 		.max(500, { message: "Description must be less than 500 characters" })
 		.optional(),
-}) 
+})
+
+export const createTeamSchema = teamSchema
+export const editTeamSchema = teamSchema 
