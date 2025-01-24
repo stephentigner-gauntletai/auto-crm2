@@ -1,0 +1,14 @@
+When generating new files and changes to existing files, please abide by my .prettierrc file.
+Especially the indentation rules. Files should be indented with tabs, not space.
+The tabs are set to 4 spaces.
+
+When working with supabase, please look at the docs in the docs/supabase-prompts folder.
+
+When working with a checklist of tasks, if you think there are things that need to be added to the checklist, please ask first. If there are things you think should be removed from the checklist, please ask first. Otherwise please only check items as they are completed.
+
+For components in the shadcn/ui registry, when you want to add shadcn/ui components via the shadcn/ui CLI, the correct command is:
+
+```
+npx shadcn@latest add <component>
+```
+where `<component>` is the name of the component you want to add.
