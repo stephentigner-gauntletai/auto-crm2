@@ -2,13 +2,14 @@
   "name": "auto-crm",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed:users": "ts-node scripts/seed-users.ts",
-    "seed:data": "ts-node scripts/seed-data.ts"
+    "seed:users": "tsx scripts/seed-users.ts",
+    "seed:data": "tsx scripts/seed-data.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -61,6 +62,7 @@
     "prettier": "^3.4.2",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5"
   }
 }

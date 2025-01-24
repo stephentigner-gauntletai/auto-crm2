@@ -1,7 +1,7 @@
-const { createClient: createSupabaseClient } = require("@supabase/supabase-js")
-const dotenvConfig = require("dotenv")
+import { createClient } from "@supabase/supabase-js"
+import * as dotenv from "dotenv"
 
-dotenvConfig.config()
+dotenv.config()
 
 const dbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const dbServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -12,7 +12,7 @@ if (!dbUrl || !dbServiceKey) {
 	)
 }
 
-const db = createSupabaseClient(dbUrl, dbServiceKey, {
+const db = createClient(dbUrl, dbServiceKey, {
 	auth: {
 		autoRefreshToken: false,
 		persistSession: false,
