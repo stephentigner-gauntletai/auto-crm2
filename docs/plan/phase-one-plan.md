@@ -45,7 +45,7 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Create roles table in database (using enum in profiles table)
 - [x] Implement basic role assignment
 - [x] Create admin dashboard shell
-- [ ] Add user management interface for admins
+- [x] Add user management interface for admins
 - [ ] Implement basic team creation
 
 ## Stage 3: Ticket Management & Interaction

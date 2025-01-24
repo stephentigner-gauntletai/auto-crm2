@@ -23,9 +23,6 @@ export default async function UsersPage() {
 					<p className="text-muted-foreground">Manage your organization&apos;s users.</p>
 				</div>
 				<div className="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-					<aside className="lg:w-1/5">
-						{/* We'll add filters here later */}
-					</aside>
 					<div className="flex-1">
 						<UserList columns={columns} data={users} />
 					</div>
