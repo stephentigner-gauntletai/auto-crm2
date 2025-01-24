@@ -25,11 +25,11 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Set up basic styling system
 
 ### Initial Ticket List View
-- [ ] Create basic ticket list component
-- [ ] Implement ticket fetching from Supabase
-- [ ] Display tickets in a simple table
-- [ ] Add basic loading states
-- [ ] Implement error handling
+- [x] Create basic ticket list component
+- [x] Implement ticket fetching from Supabase
+- [x] Display tickets in a simple table
+- [x] Add basic loading states
+- [x] Implement error handling
 
 ## Stage 2: Authentication & Basic User Management
 **Goal**: Enable secure access and basic user roles

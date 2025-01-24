@@ -8,7 +8,9 @@ export function Header() {
 					AutoCRM
 				</Link>
 				<nav className="flex flex-1 items-center justify-end space-x-4">
-					{/* Navigation items will go here */}
+					<Link href="/tickets" className="text-sm font-medium">
+						Tickets
+					</Link>
 				</nav>
 			</div>
 		</header>
