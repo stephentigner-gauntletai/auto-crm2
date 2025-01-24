@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { TicketListTable } from '@/components/tickets/ticket-list-table';
-import { MainLayout } from '@/components/layout/main-layout';
+import { ProtectedLayout } from '@/components/auth/protected-layout';
 
 export default async function TicketsPage() {
 	const supabase = await createClient();
@@ -8,18 +8,18 @@ export default async function TicketsPage() {
 
 	if (error) {
 		return (
-			<MainLayout>
+			<ProtectedLayout>
 				<div className="text-destructive">Error loading tickets: {error.message}</div>
-			</MainLayout>
+			</ProtectedLayout>
 		);
 	}
 
 	return (
-		<MainLayout>
+		<ProtectedLayout>
 			<div className="space-y-4">
 				<h1 className="text-2xl font-bold">Tickets</h1>
 				<TicketListTable tickets={tickets} />
 			</div>
-		</MainLayout>
+		</ProtectedLayout>
 	);
 } 

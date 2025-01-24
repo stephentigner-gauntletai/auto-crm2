@@ -36,8 +36,8 @@ This plan outlines the development stages for implementing the core MVP features
 
 ### Authentication System
 - [x] Set up Supabase authentication
-- [ ] Create login page
-- [ ] Implement protected routes
+- [x] Create login page
+- [x] Implement protected routes
 - [x] Add authentication context/provider
 - [ ] Create basic user profile page
 
