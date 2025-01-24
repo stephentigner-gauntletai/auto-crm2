@@ -2,6 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { Database } from '@/lib/supabase/database.types';
+import { RoleSelect } from './role-select';
 
 type Profile = Database['public']['Tables']['profiles']['Row'];
 
@@ -17,6 +18,9 @@ export const columns: ColumnDef<Profile>[] = [
 	{
 		accessorKey: 'role',
 		header: 'Role',
+		cell: ({ row }) => {
+			return <RoleSelect userId={row.original.id} currentRole={row.original.role} />;
+		},
 	},
 	{
 		accessorKey: 'created_at',
