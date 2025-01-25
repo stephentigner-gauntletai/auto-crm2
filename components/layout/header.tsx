@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth/auth-context';
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 
 export function Header() {
 	const { user, signOut, profile } = useAuth();
@@ -30,6 +31,7 @@ export function Header() {
 							<span className="text-sm text-muted-foreground">
 								{profile?.email}
 							</span>
+							<ThemeToggle />
 							<Button
 								variant="ghost"
 								size="sm"
@@ -39,11 +41,14 @@ export function Header() {
 							</Button>
 						</>
 					) : (
-						<Link href="/login">
-							<Button variant="ghost" size="sm">
-								Login
-							</Button>
-						</Link>
+						<>
+							<ThemeToggle />
+							<Link href="/login">
+								<Button variant="ghost" size="sm">
+									Login
+								</Button>
+							</Link>
+						</>
 					)}
 				</nav>
 			</div>

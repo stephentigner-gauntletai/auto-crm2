@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 
 export function LoginForm() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -58,8 +59,11 @@ export function LoginForm() {
 
 	return (
 		<Card className="w-full max-w-md">
-			<CardHeader>
-				<CardTitle className="text-2xl">Login to AutoCRM</CardTitle>
+			<CardHeader className="space-y-1">
+				<div className="flex items-center justify-between">
+					<CardTitle className="text-2xl">Login to AutoCRM</CardTitle>
+					<ThemeToggle />
+				</div>
 			</CardHeader>
 			<CardContent>
 				<Form {...form}>
