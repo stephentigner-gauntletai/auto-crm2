@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server"
 
 import { AdminProtectedLayout } from "@/components/auth/admin-protected-layout"
 import { TeamList } from "@/components/admin/teams/team-list"
-import { columns } from "@/components/admin/teams/columns"
 import { CreateTeamDialog } from "@/components/admin/teams/create-team-dialog"
 
 export default async function TeamsPage() {
@@ -36,7 +35,7 @@ export default async function TeamsPage() {
 					<h1 className="text-2xl font-bold tracking-tight">Teams</h1>
 					<CreateTeamDialog />
 				</div>
-				<TeamList columns={columns} data={teams || []} />
+				<TeamList data={teams || []} />
 			</div>
 		</AdminProtectedLayout>
 	)
