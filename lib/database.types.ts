@@ -137,6 +137,7 @@ export type Database = {
           description: string
           id: string
           internal_notes: string | null
+          priority: string
           status: string
           team_id: string | null
           title: string
@@ -149,6 +150,7 @@ export type Database = {
           description: string
           id?: string
           internal_notes?: string | null
+          priority?: string
           status?: string
           team_id?: string | null
           title: string
@@ -161,6 +163,7 @@ export type Database = {
           description?: string
           id?: string
           internal_notes?: string | null
+          priority?: string
           status?: string
           team_id?: string | null
           title?: string
