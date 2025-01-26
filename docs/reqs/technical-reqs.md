@@ -3,7 +3,9 @@ Technical requirements for the project are detaled below.
 Backend: Supabase -- this is both for database and authentication
 Frontend: Next.js with shadcn/ui
 AI: Langchain
-Deployment and hosting: AWS Amplify
+Deployment and hosting: ~~AWS Amplify~~ Vercel
+
+We originally planned to use AWS Amplify for deployment and hosting, but we have switched to Vercel.
 
 AI features will be added in phase 2, don't worry about them for phase 1.
 

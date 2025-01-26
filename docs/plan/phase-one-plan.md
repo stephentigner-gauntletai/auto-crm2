@@ -61,11 +61,11 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Add internal notes functionality
 
 ### Enhanced Ticket Views
-- [ ] Add ticket detail view
-- [ ] Implement ticket history tracking
-- [ ] Create conversation thread UI
-- [ ] Add basic filtering options
-- [ ] Implement real-time updates using Supabase subscriptions
+- [x] Add ticket detail view
+- [x] Implement ticket history tracking
+- [x] Create conversation thread UI
+- [x] Add basic filtering options
+- [x] Implement real-time updates using Supabase subscriptions
 
 ## Stage 4: Customer Portal
 **Goal**: Provide customer access to the system

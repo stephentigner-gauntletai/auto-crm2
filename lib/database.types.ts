@@ -129,6 +129,57 @@ export type Database = {
           },
         ]
       }
+      ticket_history: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          is_internal: boolean | null
+          new_value: string | null
+          old_value: string | null
+          ticket_id: string
+          type: Database["public"]["Enums"]["ticket_history_type"]
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_internal?: boolean | null
+          new_value?: string | null
+          old_value?: string | null
+          ticket_id: string
+          type: Database["public"]["Enums"]["ticket_history_type"]
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          is_internal?: boolean | null
+          new_value?: string | null
+          old_value?: string | null
+          ticket_id?: string
+          type?: Database["public"]["Enums"]["ticket_history_type"]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ticket_history_ticket_id_fkey"
+            columns: ["ticket_id"]
+            isOneToOne: false
+            referencedRelation: "tickets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ticket_history_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tickets: {
         Row: {
           assigned_to: string | null
@@ -201,7 +252,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      ticket_history_type:
+        | "comment"
+        | "status_change"
+        | "assignment_change"
+        | "team_change"
+        | "priority_change"
+        | "edit"
     }
     CompositeTypes: {
       [_ in never]: never
