@@ -28,10 +28,10 @@ type FormData = z.infer<typeof commentSchema>;
 
 interface TicketCommentFormProps {
 	ticketId: string;
-	isAgent: boolean;
+	isStaff: boolean;
 }
 
-export function TicketCommentForm({ ticketId, isAgent }: TicketCommentFormProps) {
+export function TicketCommentForm({ ticketId, isStaff }: TicketCommentFormProps) {
 	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 	const form = useForm<FormData>({
@@ -60,7 +60,7 @@ export function TicketCommentForm({ ticketId, isAgent }: TicketCommentFormProps)
 					user_id: user.id,
 					type: 'comment',
 					content: data.content,
-					is_internal: isAgent ? data.is_internal : false,
+					is_internal: isStaff ? data.is_internal : false,
 				});
 
 			if (error) throw error;
@@ -93,7 +93,7 @@ export function TicketCommentForm({ ticketId, isAgent }: TicketCommentFormProps)
 						</FormItem>
 					)}
 				/>
-				{isAgent && (
+				{isStaff && (
 					<div className="flex items-center space-x-2">
 						<FormField
 							control={form.control}
@@ -106,7 +106,7 @@ export function TicketCommentForm({ ticketId, isAgent }: TicketCommentFormProps)
 											onCheckedChange={field.onChange}
 										/>
 									</FormControl>
-									<Label>Internal note (only visible to agents)</Label>
+									<Label>Internal note (only visible to staff)</Label>
 								</FormItem>
 							)}
 						/>

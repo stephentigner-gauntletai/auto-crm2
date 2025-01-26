@@ -22,8 +22,8 @@ export default async function TicketPage({ params }: TicketPageProps) {
 		.from("profiles")
 		.select("role")
 		.eq("id", user?.id)
-		.single()
-	const isAgent = profile?.role === "agent"
+		.single();
+	const isStaff = profile?.role === 'agent' || profile?.role === 'admin';
 
 	// Fetch ticket with related data
 	const { data: ticket, error } = await supabase
@@ -77,8 +77,8 @@ export default async function TicketPage({ params }: TicketPageProps) {
 					agents={agents || []}
 				/>
 				<div className="space-y-6">
-					<TicketCommentForm ticketId={params.id} isAgent={isAgent} />
-					<TicketHistory history={history || []} isAgent={isAgent} ticketId={params.id} />
+					<TicketCommentForm ticketId={params.id} isStaff={isStaff} />
+					<TicketHistory history={history || []} isStaff={isStaff} ticketId={params.id} />
 				</div>
 			</div>
 		</ProtectedLayout>

@@ -6,18 +6,18 @@ import { MessageSquare, RefreshCw, Users, Building2, ArrowUpDown } from 'lucide-
 import { Database } from '@/lib/database.types';
 import { createClient } from '@/lib/supabase/client';
 
-type TicketHistory = Database['public']['Tables']['ticket_history']['Row'] & {
+type TicketHistoryEntry = Database['public']['Tables']['ticket_history']['Row'] & {
 	user: Pick<Database['public']['Tables']['profiles']['Row'], 'id' | 'email' | 'full_name'>;
 };
 
 interface TicketHistoryProps {
-	history: TicketHistory[];
-	isAgent: boolean;
+	history: TicketHistoryEntry[];
+	isStaff: boolean;
 	ticketId: string;
 }
 
-export function TicketHistory({ history: initialHistory, isAgent, ticketId }: TicketHistoryProps) {
-	const [history, setHistory] = useState<TicketHistory[]>(initialHistory);
+export function TicketHistory({ history: initialHistory, isStaff, ticketId }: TicketHistoryProps) {
+	const [history, setHistory] = useState<TicketHistoryEntry[]>(initialHistory);
 
 	useEffect(() => {
 		const supabase = createClient();
@@ -42,7 +42,7 @@ export function TicketHistory({ history: initialHistory, isAgent, ticketId }: Ti
 						.single();
 
 					if (data) {
-						setHistory((current) => [data as TicketHistory, ...current]);
+						setHistory((current) => [data as TicketHistoryEntry, ...current]);
 					}
 				}
 			)
@@ -54,7 +54,7 @@ export function TicketHistory({ history: initialHistory, isAgent, ticketId }: Ti
 	}, [ticketId]);
 
 	// Filter out internal entries for non-agents
-	const visibleHistory = isAgent ? history : history.filter((entry) => !entry.is_internal);
+	const visibleHistory = isStaff ? history : history.filter((entry) => !entry.is_internal);
 
 	return (
 		<div className="space-y-4">

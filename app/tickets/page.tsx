@@ -14,6 +14,7 @@ interface TicketsPageProps {
 
 export default async function TicketsPage({ searchParams }: TicketsPageProps) {
 	const supabase = await createClient();
+	const { status, priority, team_id } = await searchParams;
 
 	// Get all teams for filters
 	const { data: teams } = await supabase.from('teams').select('*').order('name');
@@ -21,14 +22,14 @@ export default async function TicketsPage({ searchParams }: TicketsPageProps) {
 	// Build query with filters
 	let query = supabase.from('tickets').select('*');
 
-	if (searchParams.status) {
-		query = query.eq('status', searchParams.status);
+	if (status) {
+		query = query.eq('status', status);
 	}
-	if (searchParams.priority) {
-		query = query.eq('priority', searchParams.priority);
+	if (priority) {
+		query = query.eq('priority', priority);
 	}
-	if (searchParams.team_id) {
-		query = query.eq('team_id', searchParams.team_id);
+	if (team_id) {
+		query = query.eq('team_id', team_id);
 	}
 
 	// Execute query
