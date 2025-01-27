@@ -34,14 +34,14 @@ export function TicketFilters({ teams, isCustomer }: TicketFiltersProps) {
 	return (
 		<div className="flex gap-4">
 			<Select
-				defaultValue={searchParams.get('status') || ''}
-				onValueChange={(value) => updateFilter('status', value)}
+				defaultValue={searchParams.get('status') || 'all'}
+				onValueChange={(value) => updateFilter('status', value === 'all' ? null : value)}
 			>
 				<SelectTrigger className="w-[180px]">
 					<SelectValue placeholder="Filter by status" />
 				</SelectTrigger>
 				<SelectContent>
-					<SelectItem value="">All Statuses</SelectItem>
+					<SelectItem value="all">All Statuses</SelectItem>
 					<SelectItem value="open">Open</SelectItem>
 					<SelectItem value="in_progress">In Progress</SelectItem>
 					<SelectItem value="waiting_on_customer">Waiting on Customer</SelectItem>
@@ -51,14 +51,14 @@ export function TicketFilters({ teams, isCustomer }: TicketFiltersProps) {
 			</Select>
 			{!isCustomer && (
 				<Select
-					defaultValue={searchParams.get('team_id') || ''}
-					onValueChange={(value) => updateFilter('team_id', value)}
+					defaultValue={searchParams.get('team_id') || 'all'}
+					onValueChange={(value) => updateFilter('team_id', value === 'all' ? null : value)}
 				>
 					<SelectTrigger className="w-[180px]">
 						<SelectValue placeholder="Filter by team" />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="">All Teams</SelectItem>
+						<SelectItem value="all">All Teams</SelectItem>
 						{teams.map((team) => (
 							<SelectItem key={team.id} value={team.id}>
 								{team.name}
