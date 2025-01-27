@@ -12,6 +12,7 @@ interface TicketPageProps {
 }
 
 export default async function TicketPage({ params }: TicketPageProps) {
+	const { id: ticketId } = await params;
 	const supabase = await createClient()
 
 	// Get user role
@@ -36,7 +37,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
 			creator:profiles!tickets_created_by_fkey(id, email, full_name)
 			`
 		)
-		.eq("id", params.id)
+		.eq("id", ticketId)
 		.single()
 
 	if (error || !ticket) {
@@ -65,7 +66,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
 			user:profiles(id, email, full_name)
 			`
 		)
-		.eq("ticket_id", params.id)
+		.eq("ticket_id", ticketId)
 		.order("created_at", { ascending: false })
 
 	return (
@@ -77,8 +78,8 @@ export default async function TicketPage({ params }: TicketPageProps) {
 					agents={agents || []}
 				/>
 				<div className="space-y-6">
-					<TicketCommentForm ticketId={params.id} isStaff={isStaff} />
-					<TicketHistory history={history || []} isStaff={isStaff} ticketId={params.id} />
+					<TicketCommentForm ticketId={ticketId} isStaff={isStaff} />
+					<TicketHistory history={history || []} isStaff={isStaff} ticketId={ticketId} />
 				</div>
 			</div>
 		</ProtectedLayout>

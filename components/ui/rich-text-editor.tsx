@@ -30,6 +30,7 @@ export function RichTextEditor({
 	className,
 }: RichTextEditorProps) {
 	const editor = useEditor({
+		immediatelyRender: false,
 		extensions: [
 			StarterKit.configure({
 				bulletList: {
@@ -79,7 +80,7 @@ export function RichTextEditor({
 				preserveWhitespace: 'full',
 			})
 		}
-	}, [value]);
+	}, [value, editor]);
 
 	if (!editor) {
 		return null
