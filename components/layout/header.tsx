@@ -43,6 +43,11 @@ export function Header() {
 					) : (
 						<>
 							<ThemeToggle />
+							<Link href="/register">
+								<Button variant="default" size="sm">
+									Register
+								</Button>
+							</Link>
 							<Link href="/login">
 								<Button variant="ghost" size="sm">
 									Login
