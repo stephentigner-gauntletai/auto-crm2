@@ -53,7 +53,17 @@ export function CreateTicketForm({ teams, agents }: CreateTicketFormProps) {
 		try {
 			setLoading(true)
 			const supabase = createClient()
-			const { error } = await supabase.from("tickets").insert(data)
+
+			// Get the current user's ID
+			const { data: { user } } = await supabase.auth.getUser()
+			if (!user) {
+				throw new Error("User not authenticated")
+			}
+
+			const { error } = await supabase.from("tickets").insert({
+				...data,
+				created_by: user.id,
+			})
 
 			if (error) throw error
 
