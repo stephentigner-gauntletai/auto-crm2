@@ -14,6 +14,7 @@ import {
 	Quote,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useEffect } from "react"
 
 interface RichTextEditorProps {
 	value: string
@@ -71,6 +72,14 @@ export function RichTextEditor({
 			onChange(editor.getHTML())
 		},
 	})
+
+	useEffect(() => {
+		if (editor) {
+			editor.commands.setContent(value, false, {
+				preserveWhitespace: 'full',
+			})
+		}
+	}, [value]);
 
 	if (!editor) {
 		return null
