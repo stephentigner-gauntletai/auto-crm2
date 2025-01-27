@@ -17,9 +17,10 @@ type Ticket = Database['public']['Tables']['tickets']['Row'];
 
 interface TicketListTableProps {
 	tickets: Ticket[];
+	isCustomer?: boolean;
 }
 
-export function TicketListTable({ tickets }: TicketListTableProps) {
+export function TicketListTable({ tickets, isCustomer }: TicketListTableProps) {
 	function getStatusColor(status: string) {
 		switch (status) {
 			case 'open':
@@ -34,6 +35,19 @@ export function TicketListTable({ tickets }: TicketListTableProps) {
 				return 'bg-gray-100 text-gray-800';
 			default:
 				return 'bg-gray-100 text-gray-800';
+		}
+	}
+
+	function getStatusLabel(status: string) {
+		if (!isCustomer) return status.replace(/_/g, ' ');
+		
+		switch (status) {
+			case 'waiting_on_customer':
+				return 'Waiting for Your Response';
+			case 'in_progress':
+				return 'Being Worked On';
+			default:
+				return status.replace(/_/g, ' ');
 		}
 	}
 
@@ -57,7 +71,7 @@ export function TicketListTable({ tickets }: TicketListTableProps) {
 					<TableRow>
 						<TableHead>Title</TableHead>
 						<TableHead>Status</TableHead>
-						<TableHead>Priority</TableHead>
+						{!isCustomer && <TableHead>Priority</TableHead>}
 						<TableHead>Created</TableHead>
 						<TableHead>Updated</TableHead>
 					</TableRow>
@@ -78,17 +92,19 @@ export function TicketListTable({ tickets }: TicketListTableProps) {
 									className={`${getStatusColor(ticket.status)} border-none`}
 									variant="outline"
 								>
-									{ticket.status.replace(/_/g, ' ')}
+									{getStatusLabel(ticket.status)}
 								</Badge>
 							</TableCell>
-							<TableCell>
-								<Badge
-									className={`${getPriorityColor(ticket.priority)} border-none`}
-									variant="outline"
-								>
-									{ticket.priority}
-								</Badge>
-							</TableCell>
+							{!isCustomer && (
+								<TableCell>
+									<Badge
+										className={`${getPriorityColor(ticket.priority)} border-none`}
+										variant="outline"
+									>
+										{ticket.priority}
+									</Badge>
+								</TableCell>
+							)}
 							<TableCell>
 								{formatDistanceToNow(new Date(ticket.created_at), {
 									addSuffix: true,

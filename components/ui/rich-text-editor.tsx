@@ -21,6 +21,7 @@ interface RichTextEditorProps {
 	onChange: (value: string) => void
 	placeholder?: string
 	className?: string
+	editable?: boolean
 }
 
 export function RichTextEditor({
@@ -28,9 +29,11 @@ export function RichTextEditor({
 	onChange,
 	placeholder = "Enter your content here...",
 	className,
+	editable = true,
 }: RichTextEditorProps) {
 	const editor = useEditor({
 		immediatelyRender: false,
+		editable,
 		extensions: [
 			StarterKit.configure({
 				bulletList: {
@@ -95,56 +98,58 @@ export function RichTextEditor({
 
 	return (
 		<div className="rounded-md border">
-			<div className="flex flex-wrap gap-1 border-b bg-muted/50 p-1">
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => editor.chain().focus().toggleBold().run()}
-					className={cn(editor.isActive("bold") && "bg-muted")}
-				>
-					<Bold className="h-4 w-4" />
-				</Button>
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => editor.chain().focus().toggleItalic().run()}
-					className={cn(editor.isActive("italic") && "bg-muted")}
-				>
-					<Italic className="h-4 w-4" />
-				</Button>
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => editor.chain().focus().toggleBulletList().run()}
-					className={cn(editor.isActive("bulletList") && "bg-muted")}
-				>
-					<List className="h-4 w-4" />
-				</Button>
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => editor.chain().focus().toggleOrderedList().run()}
-					className={cn(editor.isActive("orderedList") && "bg-muted")}
-				>
-					<ListOrdered className="h-4 w-4" />
-				</Button>
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={() => editor.chain().focus().toggleBlockquote().run()}
-					className={cn(editor.isActive("blockquote") && "bg-muted")}
-				>
-					<Quote className="h-4 w-4" />
-				</Button>
-				<Button
-					variant="ghost"
-					size="sm"
-					onClick={addLink}
-					className={cn(editor.isActive("link") && "bg-muted")}
-				>
-					<LinkIcon className="h-4 w-4" />
-				</Button>
-			</div>
+			{editable && (
+				<div className="flex flex-wrap gap-1 border-b bg-muted/50 p-1">
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => editor.chain().focus().toggleBold().run()}
+						className={cn(editor.isActive("bold") && "bg-muted")}
+					>
+						<Bold className="h-4 w-4" />
+					</Button>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => editor.chain().focus().toggleItalic().run()}
+						className={cn(editor.isActive("italic") && "bg-muted")}
+					>
+						<Italic className="h-4 w-4" />
+					</Button>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => editor.chain().focus().toggleBulletList().run()}
+						className={cn(editor.isActive("bulletList") && "bg-muted")}
+					>
+						<List className="h-4 w-4" />
+					</Button>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => editor.chain().focus().toggleOrderedList().run()}
+						className={cn(editor.isActive("orderedList") && "bg-muted")}
+					>
+						<ListOrdered className="h-4 w-4" />
+					</Button>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => editor.chain().focus().toggleBlockquote().run()}
+						className={cn(editor.isActive("blockquote") && "bg-muted")}
+					>
+						<Quote className="h-4 w-4" />
+					</Button>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={addLink}
+						className={cn(editor.isActive("link") && "bg-muted")}
+					>
+						<LinkIcon className="h-4 w-4" />
+					</Button>
+				</div>
+			)}
 			<EditorContent editor={editor} />
 		</div>
 	)

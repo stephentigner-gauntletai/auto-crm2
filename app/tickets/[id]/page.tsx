@@ -24,6 +24,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
 		.select("role")
 		.eq("id", user?.id)
 		.single();
+	const isCustomer = profile?.role === 'customer';
 	const isStaff = profile?.role === 'agent' || profile?.role === 'admin';
 
 	// Fetch ticket with related data
@@ -44,18 +45,20 @@ export default async function TicketPage({ params }: TicketPageProps) {
 		notFound()
 	}
 
-	// Get all teams for assignment
-	const { data: teams } = await supabase
-		.from("teams")
-		.select("*")
-		.order("name")
+	// Check if customer has access to this ticket
+	if (isCustomer && ticket.created_by !== user?.id) {
+		notFound()
+	}
 
-	// Get all agents for assignment
-	const { data: agents } = await supabase
-		.from("profiles")
-		.select("*")
-		.eq("role", "agent")
-		.order("email")
+	// Get all teams for assignment (only for staff)
+	const { data: teams } = !isCustomer
+		? await supabase.from("teams").select("*").order("name")
+		: { data: null };
+
+	// Get all agents for assignment (only for staff)
+	const { data: agents } = !isCustomer
+		? await supabase.from("profiles").select("*").eq("role", "agent").order("email")
+		: { data: null };
 
 	// Fetch ticket history with user details
 	const { data: history } = await supabase
@@ -76,6 +79,7 @@ export default async function TicketPage({ params }: TicketPageProps) {
 					ticket={ticket}
 					teams={teams || []}
 					agents={agents || []}
+					isCustomer={isCustomer}
 				/>
 				<div className="space-y-6">
 					<TicketCommentForm ticketId={ticketId} isStaff={isStaff} />

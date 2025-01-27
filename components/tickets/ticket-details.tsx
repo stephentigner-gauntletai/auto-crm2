@@ -43,9 +43,10 @@ interface TicketDetailsProps {
 	ticket: Ticket
 	teams: Team[]
 	agents: Profile[]
+	isCustomer?: boolean
 }
 
-export function TicketDetails({ ticket, teams, agents }: TicketDetailsProps) {
+export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetailsProps) {
 	const [loading, setLoading] = useState(false)
 	const router = useRouter()
 	const form = useForm<FormData>({
@@ -83,7 +84,7 @@ export function TicketDetails({ ticket, teams, agents }: TicketDetailsProps) {
 		<div className="space-y-6">
 			<div>
 				<h1 className="text-2xl font-bold tracking-tight">
-					Ticket Details
+					{isCustomer ? 'Support Ticket Details' : 'Ticket Details'}
 				</h1>
 				<div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
 					<p>
@@ -100,9 +101,17 @@ export function TicketDetails({ ticket, teams, agents }: TicketDetailsProps) {
 							addSuffix: true,
 						})}
 					</p>
+					{!isCustomer && ticket.assignee && (
+						<>
+							<p>•</p>
+							<p>
+								Assigned to{" "}
+								{ticket.assignee.full_name || ticket.assignee.email}
+							</p>
+						</>
+					)}
 				</div>
 			</div>
-
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
@@ -115,7 +124,7 @@ export function TicketDetails({ ticket, teams, agents }: TicketDetailsProps) {
 							<FormItem>
 								<FormLabel>Title</FormLabel>
 								<FormControl>
-									<Input {...field} />
+									<Input {...field} disabled={isCustomer} />
 								</FormControl>
 								<FormMessage />
 							</FormItem>
@@ -131,134 +140,139 @@ export function TicketDetails({ ticket, teams, agents }: TicketDetailsProps) {
 									<RichTextEditor
 										value={field.value}
 										onChange={field.onChange}
+										editable={!isCustomer}
 									/>
 								</FormControl>
 								<FormMessage />
 							</FormItem>
 						)}
 					/>
-					<div className="grid grid-cols-3 gap-4">
-						<FormField
-							control={form.control}
-							name="status"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Status</FormLabel>
-									<Select
-										onValueChange={field.onChange}
-										defaultValue={field.value}
-									>
+					{!isCustomer && (
+						<>
+							<div className="grid grid-cols-3 gap-4">
+								<FormField
+									control={form.control}
+									name="status"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Status</FormLabel>
+											<Select
+												onValueChange={field.onChange}
+												defaultValue={field.value}
+											>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder="Select status" />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													<SelectItem value="open">
+														Open
+													</SelectItem>
+													<SelectItem value="in_progress">
+														In Progress
+													</SelectItem>
+													<SelectItem value="waiting_on_customer">
+														Waiting on Customer
+													</SelectItem>
+													<SelectItem value="resolved">
+														Resolved
+													</SelectItem>
+													<SelectItem value="closed">
+														Closed
+													</SelectItem>
+												</SelectContent>
+											</Select>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="team_id"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Assign to Team</FormLabel>
+											<Select
+												onValueChange={field.onChange}
+												defaultValue={field.value}
+											>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder="Select a team" />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													{teams.map((team) => (
+														<SelectItem
+															key={team.id}
+															value={team.id}
+														>
+															{team.name}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="assigned_to"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Assign to Agent</FormLabel>
+											<Select
+												onValueChange={field.onChange}
+												defaultValue={field.value}
+											>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder="Select an agent" />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													{agents.map((agent) => (
+														<SelectItem
+															key={agent.id}
+															value={agent.id}
+														>
+															{agent.full_name ||
+																agent.email}
+														</SelectItem>
+													))}
+												</SelectContent>
+											</Select>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+							</div>
+							<FormField
+								control={form.control}
+								name="internal_notes"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Internal Notes</FormLabel>
 										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Select status" />
-											</SelectTrigger>
+											<RichTextEditor
+												value={field.value || ""}
+												onChange={field.onChange}
+												placeholder="Add internal notes (only visible to agents)"
+											/>
 										</FormControl>
-										<SelectContent>
-											<SelectItem value="open">
-												Open
-											</SelectItem>
-											<SelectItem value="in_progress">
-												In Progress
-											</SelectItem>
-											<SelectItem value="waiting_on_customer">
-												Waiting on Customer
-											</SelectItem>
-											<SelectItem value="resolved">
-												Resolved
-											</SelectItem>
-											<SelectItem value="closed">
-												Closed
-											</SelectItem>
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="team_id"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Assign to Team</FormLabel>
-									<Select
-										onValueChange={field.onChange}
-										defaultValue={field.value}
-									>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Select a team" />
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											{teams.map((team) => (
-												<SelectItem
-													key={team.id}
-													value={team.id}
-												>
-													{team.name}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="assigned_to"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Assign to Agent</FormLabel>
-									<Select
-										onValueChange={field.onChange}
-										defaultValue={field.value}
-									>
-										<FormControl>
-											<SelectTrigger>
-												<SelectValue placeholder="Select an agent" />
-											</SelectTrigger>
-										</FormControl>
-										<SelectContent>
-											{agents.map((agent) => (
-												<SelectItem
-													key={agent.id}
-													value={agent.id}
-												>
-													{agent.full_name ||
-														agent.email}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-					</div>
-					<FormField
-						control={form.control}
-						name="internal_notes"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Internal Notes</FormLabel>
-								<FormControl>
-									<RichTextEditor
-										value={field.value || ""}
-										onChange={field.onChange}
-										placeholder="Add internal notes (only visible to agents)"
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<div className="flex justify-end">
-						<Button type="submit" disabled={loading}>
-							{loading ? "Saving..." : "Save Changes"}
-						</Button>
-					</div>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<div className="flex justify-end">
+								<Button type="submit" disabled={loading}>
+									{loading ? "Saving..." : "Save Changes"}
+								</Button>
+							</div>
+						</>
+					)}
 				</form>
 			</Form>
 		</div>
