@@ -15,6 +15,7 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
 	signOut: () => Promise<void>;
+	markProfileDirty: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,6 +26,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 		profile: null,
 		isLoading: true,
 	});
+	const [profileDirty, setProfileDirty] = useState(false);
+
+	const markProfileDirty = () => {
+		setProfileDirty(true);
+	};
 
 	useEffect(() => {
 		const supabase = createClient();
@@ -53,6 +59,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 				});
 			}
 		});
+
+		setProfileDirty(false);
+	}, [profileDirty]);
+
+	useEffect(() => {
+		const supabase = createClient();
 
 		// Listen for auth changes
 		const {
@@ -98,6 +110,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 			value={{
 				...state,
 				signOut,
+				markProfileDirty,
 			}}
 		>
 			{children}

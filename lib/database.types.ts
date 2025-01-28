@@ -38,25 +38,37 @@ export type Database = {
         Row: {
           created_at: string
           email: string
+          email_notifications: boolean | null
           full_name: string | null
           id: string
+          last_password_change: string | null
+          phone_number: string | null
           role: string
+          ticket_update_notifications: boolean | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           email: string
+          email_notifications?: boolean | null
           full_name?: string | null
           id: string
+          last_password_change?: string | null
+          phone_number?: string | null
           role?: string
+          ticket_update_notifications?: boolean | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           email?: string
+          email_notifications?: boolean | null
           full_name?: string | null
           id?: string
+          last_password_change?: string | null
+          phone_number?: string | null
           role?: string
+          ticket_update_notifications?: boolean | null
           updated_at?: string
         }
         Relationships: []

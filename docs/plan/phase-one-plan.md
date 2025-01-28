@@ -74,8 +74,8 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Create customer registration flow
 - [x] Implement customer-specific views
 - [x] Create ticket submission form for customers
-- [ ] Add ticket tracking interface
-- [ ] Implement customer profile management
+- [x] Add ticket tracking interface
+- [x] Implement customer profile management
 
 ### Portal Features
 - [ ] Add customer ticket history view
