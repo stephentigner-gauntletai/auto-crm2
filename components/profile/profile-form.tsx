@@ -45,7 +45,21 @@ export function ProfileForm() {
 
 		try {
 			const supabase = createClient();
-			const { error } = await supabase
+
+			// First update auth user data
+			const { error: authError } = await supabase.auth.updateUser({
+				email: data.email,
+				data: {
+					full_name: data.full_name,
+				},
+			});
+
+			if (authError) {
+				throw authError;
+			}
+
+			// Then update additional profile data
+			const { error: profileError } = await supabase
 				.from('profiles')
 				.update({
 					full_name: data.full_name,
@@ -56,11 +70,11 @@ export function ProfileForm() {
 				})
 				.eq('id', profile?.id || '');
 
-			if (error) {
-				throw error;
+			if (profileError) {
+				throw profileError;
 			}
 
-			setSuccess('Profile updated successfully');
+			setSuccess('Profile updated successfully. If you changed your email, please check your inbox for a confirmation link.');
 			markProfileDirty();
 		} catch (err) {
 			setError(err instanceof Error ? err.message : 'An error occurred while updating profile');
