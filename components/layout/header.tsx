@@ -7,6 +7,7 @@ import { ThemeToggle } from '@/components/theme/theme-toggle';
 
 export function Header() {
 	const { user, signOut, profile } = useAuth();
+	const isCustomer = profile?.role === 'customer';
 
 	return (
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -17,6 +18,11 @@ export function Header() {
 				<nav className="flex flex-1 items-center justify-end space-x-4">
 					{user ? (
 						<>
+							{isCustomer && (
+								<Link href="/dashboard" className="text-sm font-medium">
+									Dashboard
+								</Link>
+							)}
 							<Link href="/tickets" className="text-sm font-medium">
 								Tickets
 							</Link>
