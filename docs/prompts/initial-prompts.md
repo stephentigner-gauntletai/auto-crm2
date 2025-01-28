@@ -10,3 +10,6 @@ Then this prompt to start building the system.
 
 > Let's start building. We'll go through the checklist you just created in the@phase-one-plan.md . Check off items as you complete them. DO NOT add or remove items without checking with me first. When working with supabase, make sure to follow the guidlines in @supabase-auth-guidelines.md and @supabase-create-migration.md.
 
+A starter prompt for starting a new composer session (customize as needed):
+
+> We're creating a CRM (like Zendesk) and are building out our MVP with the most important and basic features for now. The original client requirements are in @system-reqs.md , with technical requirements in @technical-reqs.md . Coding standards are in @standards.md . We have a checklist of tasks to complete located in @phase-one-plan.md .
