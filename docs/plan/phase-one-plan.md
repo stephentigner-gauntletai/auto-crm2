@@ -80,7 +80,7 @@ This plan outlines the development stages for implementing the core MVP features
 ### Portal Features
 - [x] Add customer ticket history view
 - [x] Create customer dashboard
-- [ ] Implement email notifications for ticket updates
+- [x] Implement email notifications for ticket updates
 - [ ] Add basic customer settings
 - [ ] Create customer feedback mechanism
 
