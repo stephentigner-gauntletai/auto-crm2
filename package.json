@@ -28,6 +28,7 @@
     "@tiptap/react": "^2.11.3",
     "@tiptap/starter-kit": "^2.11.3",
     "@vercel/analytics": "^1.4.1",
+    "@vercel/edge-config": "^1.4.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

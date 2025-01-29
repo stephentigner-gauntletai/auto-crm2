@@ -1,11 +1,12 @@
 'use client';
 
-import { Component, type ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { handleError, type AppError } from '@/lib/utils/error-utils';
-import logger from '@/lib/utils/logger';
+import { reportError } from '@/lib/utils/error-reporting';
+import { logger } from '@/lib/utils/logger';
 
 interface Props {
 	children: ReactNode;
@@ -26,10 +27,16 @@ export class ErrorBoundary extends Component<Props, State> {
 		return { error: handleError(error) };
 	}
 
-	componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-		// Log the error to our logger service
-		logger.error('Uncaught error in React component', error, {
+	componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+		// Log to our structured logger
+		logger.error('React Error Boundary caught error', error, {
+			componentStack: errorInfo.componentStack
+		});
+
+		// Report to error tracking
+		reportError(error, {
 			componentStack: errorInfo.componentStack,
+			type: 'React Error Boundary',
 		});
 	}
 

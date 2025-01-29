@@ -102,8 +102,8 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Add success/error toasts
 
 ### Performance & Testing
-- [ ] Implement basic performance monitoring
-- [ ] Add error tracking
+- [x] Implement basic performance monitoring
+- [x] Add error tracking
 - [ ] Create basic test suite
 - [ ] Optimize database queries
 - [ ] Add basic security measures
