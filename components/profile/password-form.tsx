@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { createClient } from '@/lib/supabase/client';
 import { passwordChangeSchema, type PasswordChangeFormData } from '@/lib/validations/profile';
+import { notify } from '@/lib/utils/notifications';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -20,8 +21,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function PasswordForm() {
 	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-	const [success, setSuccess] = useState<string | null>(null);
 
 	const form = useForm<PasswordChangeFormData>({
 		resolver: zodResolver(passwordChangeSchema),
@@ -34,8 +33,6 @@ export function PasswordForm() {
 
 	async function onSubmit(data: PasswordChangeFormData) {
 		setIsLoading(true);
-		setError(null);
-		setSuccess(null);
 
 		try {
 			const supabase = createClient();
@@ -44,7 +41,8 @@ export function PasswordForm() {
 			});
 
 			if (error) {
-				throw error;
+				notify.error(error);
+				return;
 			}
 
 			// Update last_password_change timestamp
@@ -57,12 +55,14 @@ export function PasswordForm() {
 
 			if (updateError) {
 				console.error('Error updating last_password_change:', updateError);
+				// Don't return here as this is not critical
 			}
 
-			setSuccess('Password updated successfully');
+			notify.success("Password updated successfully");
 			form.reset();
-		} catch (err) {
-			setError(err instanceof Error ? err.message : 'An error occurred while updating password');
+		} catch (error) {
+			console.error('Error updating password:', error);
+			notify.error("Failed to update password. Please try again.");
 		} finally {
 			setIsLoading(false);
 		}
@@ -130,8 +130,6 @@ export function PasswordForm() {
 								</FormItem>
 							)}
 						/>
-						{error && <div className="text-sm text-destructive">{error}</div>}
-						{success && <div className="text-sm text-green-600">{success}</div>}
 						<Button type="submit" disabled={isLoading}>
 							{isLoading ? 'Updating...' : 'Update Password'}
 						</Button>

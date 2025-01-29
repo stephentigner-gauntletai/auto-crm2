@@ -25,12 +25,24 @@ import {
 	SelectValue,
 } from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client"
-import { createTicketSchema } from "@/lib/validations/ticket"
+import { ticketSchema } from "@/lib/validations/ticket"
+import { notify } from "@/lib/utils/notifications"
 import { Database } from "@/lib/database.types"
 
 type Team = Database["public"]["Tables"]["teams"]["Row"]
 type Profile = Database["public"]["Tables"]["profiles"]["Row"]
-type FormData = z.infer<typeof createTicketSchema>
+
+// Create a subset of ticketSchema for staff ticket creation
+const staffTicketSchema = ticketSchema.pick({
+	title: true,
+	description: true,
+	team_id: true,
+	assigned_to: true,
+}).extend({
+	status: z.literal("open").default("open"),
+})
+
+type FormData = z.infer<typeof staffTicketSchema>
 
 interface CreateTicketFormProps {
 	teams: Team[]
@@ -41,11 +53,13 @@ export function CreateTicketForm({ teams, agents }: CreateTicketFormProps) {
 	const [loading, setLoading] = useState(false)
 	const router = useRouter()
 	const form = useForm<FormData>({
-		resolver: zodResolver(createTicketSchema),
+		resolver: zodResolver(staffTicketSchema),
 		defaultValues: {
 			title: "",
 			description: "",
 			status: "open",
+			team_id: null,
+			assigned_to: null,
 		},
 	})
 
@@ -55,9 +69,14 @@ export function CreateTicketForm({ teams, agents }: CreateTicketFormProps) {
 			const supabase = createClient()
 
 			// Get the current user's ID
-			const { data: { user } } = await supabase.auth.getUser()
+			const { data: { user }, error: userError } = await supabase.auth.getUser()
+			if (userError) {
+				notify.error("Authentication error. Please try again.");
+				return;
+			}
 			if (!user) {
-				throw new Error("User not authenticated")
+				notify.error("You must be logged in to create a ticket.");
+				return;
 			}
 
 			const { error } = await supabase.from("tickets").insert({
@@ -65,13 +84,18 @@ export function CreateTicketForm({ teams, agents }: CreateTicketFormProps) {
 				created_by: user.id,
 			})
 
-			if (error) throw error
+			if (error) {
+				notify.error(error);
+				return;
+			}
 
+			notify.success("Ticket created successfully");
 			form.reset()
 			router.push("/tickets")
 			router.refresh()
 		} catch (error) {
 			console.error("Error creating ticket:", error)
+			notify.error("Failed to create ticket. Please try again.");
 		} finally {
 			setLoading(false)
 		}
@@ -122,7 +146,7 @@ export function CreateTicketForm({ teams, agents }: CreateTicketFormProps) {
 								<FormLabel>Assign to Team</FormLabel>
 								<Select
 									onValueChange={field.onChange}
-									defaultValue={field.value}
+									value={field.value || undefined}
 								>
 									<FormControl>
 										<SelectTrigger>
@@ -152,7 +176,7 @@ export function CreateTicketForm({ teams, agents }: CreateTicketFormProps) {
 								<FormLabel>Assign to Agent</FormLabel>
 								<Select
 									onValueChange={field.onChange}
-									defaultValue={field.value}
+									value={field.value || undefined}
 								>
 									<FormControl>
 										<SelectTrigger>

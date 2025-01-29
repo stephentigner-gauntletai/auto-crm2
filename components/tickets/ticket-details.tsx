@@ -30,6 +30,7 @@ import { ticketSchema, ticketUpdateSchema } from "@/lib/validations/ticket"
 import { Database } from "@/lib/database.types"
 import { commonAnimations, animations, getTransitionClasses } from '@/lib/utils/animations'
 import { cn } from '@/lib/utils'
+import { notify } from "@/lib/utils/notifications"
 
 type Team = Database["public"]["Tables"]["teams"]["Row"]
 type Profile = Database["public"]["Tables"]["profiles"]["Row"]
@@ -73,11 +74,16 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 				.update(data)
 				.eq("id", ticket.id)
 
-			if (error) throw error
+			if (error) {
+				notify.error(error)
+				return
+			}
 
 			router.refresh()
+			notify.success("Ticket updated successfully")
 		} catch (error) {
 			console.error("Error updating ticket:", error)
+			notify.error("Failed to update ticket. Please try again.")
 		} finally {
 			setLoading(false)
 		}

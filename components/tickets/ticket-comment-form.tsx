@@ -18,6 +18,7 @@ import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { createClient } from '@/lib/supabase/client';
+import { notify } from '@/lib/utils/notifications';
 
 const commentSchema = z.object({
 	content: z.string().min(1, 'Comment cannot be empty'),
@@ -48,9 +49,14 @@ export function TicketCommentForm({ ticketId, isStaff }: TicketCommentFormProps)
 			const supabase = createClient();
 
 			// Get the current user's ID
-			const { data: { user } } = await supabase.auth.getUser();
+			const { data: { user }, error: userError } = await supabase.auth.getUser();
+			if (userError) {
+				notify.error("Authentication error. Please try again.");
+				return;
+			}
 			if (!user) {
-				throw new Error('User not authenticated');
+				notify.error("You must be logged in to add comments.");
+				return;
 			}
 
 			const { error } = await supabase
@@ -63,12 +69,17 @@ export function TicketCommentForm({ ticketId, isStaff }: TicketCommentFormProps)
 					is_internal: isStaff ? data.is_internal : false,
 				});
 
-			if (error) throw error;
+			if (error) {
+				notify.error(error);
+				return;
+			}
 
 			form.reset();
 			router.refresh();
+			notify.success("Comment added successfully");
 		} catch (error) {
 			console.error('Error adding comment:', error);
+			notify.error("Failed to add comment. Please try again.");
 		} finally {
 			setLoading(false);
 		}

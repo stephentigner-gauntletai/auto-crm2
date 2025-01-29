@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { createClient } from '@/lib/supabase/client';
 import { profileSchema, type ProfileFormData } from '@/lib/validations/profile';
 import { useAuth } from '@/lib/auth/auth-context';
+import { notify } from '@/lib/utils/notifications';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,8 +24,6 @@ import { Switch } from '@/components/ui/switch';
 
 export function ProfileForm() {
 	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-	const [success, setSuccess] = useState<string | null>(null);
 	const { profile, markProfileDirty } = useAuth();
 
 	const form = useForm<ProfileFormData>({
@@ -40,8 +39,6 @@ export function ProfileForm() {
 
 	async function onSubmit(data: ProfileFormData) {
 		setIsLoading(true);
-		setError(null);
-		setSuccess(null);
 
 		try {
 			const supabase = createClient();
@@ -55,7 +52,8 @@ export function ProfileForm() {
 			});
 
 			if (authError) {
-				throw authError;
+				notify.error(authError);
+				return;
 			}
 
 			// Then update additional profile data
@@ -71,13 +69,22 @@ export function ProfileForm() {
 				.eq('id', profile?.id || '');
 
 			if (profileError) {
-				throw profileError;
+				notify.error(profileError);
+				return;
 			}
 
-			setSuccess('Profile updated successfully. If you changed your email, please check your inbox for a confirmation link.');
+			notify.success(
+				"Profile updated successfully",
+				{
+					description: data.email !== profile?.email 
+						? "Please check your inbox for a confirmation link."
+						: undefined
+				}
+			);
 			markProfileDirty();
-		} catch (err) {
-			setError(err instanceof Error ? err.message : 'An error occurred while updating profile');
+		} catch (error) {
+			console.error('Error updating profile:', error);
+			notify.error("Failed to update profile. Please try again.");
 		} finally {
 			setIsLoading(false);
 		}
@@ -197,8 +204,6 @@ export function ProfileForm() {
 							/>
 						</div>
 
-						{error && <div className="text-sm text-destructive">{error}</div>}
-						{success && <div className="text-sm text-green-600">{success}</div>}
 						<Button type="submit" disabled={isLoading}>
 							{isLoading ? 'Saving...' : 'Save Changes'}
 						</Button>

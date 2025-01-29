@@ -19,15 +19,24 @@ import {
 import { Input } from "@/components/ui/input"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { createClient } from "@/lib/supabase/client"
-import { createTicketSchema } from "@/lib/validations/ticket"
+import { ticketSchema } from "@/lib/validations/ticket"
+import { notify } from "@/lib/utils/notifications"
 
-type FormData = z.infer<typeof createTicketSchema>
+// Create a subset of ticketSchema for customer ticket creation
+const customerTicketSchema = ticketSchema.pick({
+	title: true,
+	description: true,
+}).extend({
+	status: z.literal("open").default("open"),
+})
+
+type FormData = z.infer<typeof customerTicketSchema>
 
 export function CustomerTicketForm() {
 	const [loading, setLoading] = useState(false)
 	const router = useRouter()
 	const form = useForm<FormData>({
-		resolver: zodResolver(createTicketSchema),
+		resolver: zodResolver(customerTicketSchema),
 		defaultValues: {
 			title: "",
 			description: "",
@@ -41,9 +50,14 @@ export function CustomerTicketForm() {
 			const supabase = createClient()
 
 			// Get the current user's ID
-			const { data: { user } } = await supabase.auth.getUser()
+			const { data: { user }, error: userError } = await supabase.auth.getUser()
+			if (userError) {
+				notify.error("Authentication error. Please try again.");
+				return;
+			}
 			if (!user) {
-				throw new Error("User not authenticated")
+				notify.error("You must be logged in to submit a ticket.");
+				return;
 			}
 
 			const { error } = await supabase.from("tickets").insert({
@@ -51,13 +65,18 @@ export function CustomerTicketForm() {
 				created_by: user.id,
 			})
 
-			if (error) throw error
+			if (error) {
+				notify.error(error);
+				return;
+			}
 
+			notify.success("Support request submitted successfully");
 			form.reset()
 			router.push("/tickets")
 			router.refresh()
 		} catch (error) {
 			console.error("Error creating ticket:", error)
+			notify.error("Failed to submit support request. Please try again.");
 		} finally {
 			setLoading(false)
 		}
