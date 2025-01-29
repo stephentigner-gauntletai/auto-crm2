@@ -1,30 +1,31 @@
-import * as z from "zod"
+import { z } from 'zod';
+import { messages } from '@/lib/utils/validation';
 
-export const ticketStatusEnum = z.enum([
-	"open",
-	"in_progress",
-	"waiting_on_customer",
-	"resolved",
-	"closed",
-])
+export const ticketSchema = z.object({
+	title: z.string()
+		.min(1, messages.required)
+		.max(255, messages.max('Title', 255)),
+	description: z.string()
+		.min(1, messages.required)
+		.max(10000, messages.max('Description', 10000)),
+	status: z.enum(['open', 'in_progress', 'resolved', 'closed']),
+	priority: z.enum(['low', 'medium', 'high', 'urgent']),
+	category: z.string().min(1, messages.required),
+	assignee_id: z.string().uuid().optional(),
+	team_id: z.string().uuid(),
+	customer_id: z.string().uuid(),
+});
 
-export const createTicketSchema = z.object({
-	title: z
-		.string()
-		.min(3, { message: "Title must be at least 3 characters" })
-		.max(100, { message: "Title must be less than 100 characters" }),
-	description: z
-		.string()
-		.min(10, { message: "Description must be at least 10 characters" })
-		.max(5000, { message: "Description must be less than 5000 characters" }),
-	status: ticketStatusEnum.default("open"),
-	team_id: z.string().uuid().optional(),
-	assigned_to: z.string().uuid().optional(),
-})
+export const ticketUpdateSchema = ticketSchema.partial();
 
-export const updateTicketSchema = createTicketSchema.extend({
-	internal_notes: z
-		.string()
-		.max(5000, { message: "Notes must be less than 5000 characters" })
-		.optional(),
-}) 
+export const ticketCommentSchema = z.object({
+	ticket_id: z.string().uuid(),
+	content: z.string()
+		.min(1, messages.required)
+		.max(5000, messages.max('Comment', 5000)),
+	is_internal: z.boolean().default(false),
+});
+
+export type TicketFormData = z.infer<typeof ticketSchema>;
+export type TicketUpdateFormData = z.infer<typeof ticketUpdateSchema>;
+export type TicketCommentFormData = z.infer<typeof ticketCommentSchema>; 
