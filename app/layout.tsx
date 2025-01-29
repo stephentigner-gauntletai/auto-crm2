@@ -1,6 +1,7 @@
 import "@/app/globals.css"
 import { Inter } from "next/font/google"
 import { type Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/react';
 
 import { AuthProvider } from "@/lib/auth/auth-context"
 import { ThemeProvider } from "@/components/theme/theme-provider"
@@ -36,6 +37,7 @@ export default function RootLayout({
 					</ErrorBoundary>
 					<NotificationProvider />
 				</ThemeProvider>
+				<Analytics />
 			</body>
 		</html>
 	)
