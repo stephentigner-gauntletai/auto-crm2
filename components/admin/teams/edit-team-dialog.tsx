@@ -27,12 +27,12 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { createClient } from "@/lib/supabase/client"
-import { editTeamSchema } from "@/lib/validations/team"
+import { teamUpdateSchema } from "@/lib/validations/team"
 import { Database } from "@/lib/database.types"
 import { Pencil } from "lucide-react"
 
 type Team = Database["public"]["Tables"]["teams"]["Row"]
-type FormData = z.infer<typeof editTeamSchema>
+type FormData = z.infer<typeof teamUpdateSchema>
 
 interface EditTeamDialogProps {
 	team: Team
@@ -42,10 +42,10 @@ export function EditTeamDialog({ team }: EditTeamDialogProps) {
 	const [open, setOpen] = useState(false)
 	const router = useRouter()
 	const form = useForm<FormData>({
-		resolver: zodResolver(editTeamSchema),
+		resolver: zodResolver(teamUpdateSchema),
 		defaultValues: {
 			name: team.name,
-			description: team.description || "",
+			description: team.description,
 		},
 	})
 
@@ -111,6 +111,7 @@ export function EditTeamDialog({ team }: EditTeamDialogProps) {
 										<Textarea
 											placeholder="Enter team description (optional)"
 											{...field}
+											value={field.value || ""}
 										/>
 									</FormControl>
 									<FormMessage />

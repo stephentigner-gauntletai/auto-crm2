@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { LayoutDashboard, Users, UsersRound } from "lucide-react"
-import { commonAnimations, animations } from '@/lib/utils/animations';
+import { animations } from '@/lib/utils/animations';
 
 const items = [
 	{

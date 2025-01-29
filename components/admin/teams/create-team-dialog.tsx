@@ -27,25 +27,34 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { createClient } from "@/lib/supabase/client"
-import { createTeamSchema } from "@/lib/validations/team"
+import { teamSchema } from "@/lib/validations/team"
 
-type FormData = z.infer<typeof createTeamSchema>
+type FormData = z.infer<typeof teamSchema>
 
 export function CreateTeamDialog() {
 	const [open, setOpen] = useState(false)
 	const router = useRouter()
+	const supabase = createClient()
+
 	const form = useForm<FormData>({
-		resolver: zodResolver(createTeamSchema),
+		resolver: zodResolver(teamSchema),
 		defaultValues: {
 			name: "",
-			description: "",
+			description: null,
+			created_by: "",
 		},
 	})
 
 	async function onSubmit(data: FormData) {
 		try {
-			const supabase = createClient()
-			const { error } = await supabase.from("teams").insert(data)
+			const { data: { user }, error: userError } = await supabase.auth.getUser()
+			if (userError) throw userError
+			if (!user) throw new Error("No user found")
+
+			const { error } = await supabase.from("teams").insert({
+				...data,
+				created_by: user.id,
+			})
 
 			if (error) throw error
 
@@ -100,6 +109,7 @@ export function CreateTeamDialog() {
 										<Textarea
 											placeholder="Enter team description (optional)"
 											{...field}
+											value={field.value || ""}
 										/>
 									</FormControl>
 									<FormMessage />

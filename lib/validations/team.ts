@@ -7,9 +7,9 @@ export const teamSchema = z.object({
 		.max(100, messages.max('Team name', 100)),
 	description: z.string()
 		.max(500, messages.max('Description', 500))
+		.nullable()
 		.optional(),
-	leader_id: z.string().uuid(),
-	is_active: z.boolean().default(true),
+	created_by: z.string().uuid(),
 });
 
 export const teamUpdateSchema = teamSchema.partial();
