@@ -98,8 +98,8 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Implement responsive design throughout
 - [x] Add proper transitions and animations
 - [x] Create skeleton loaders
-- [ ] Implement proper form validation feedback
-- [ ] Add success/error toasts
+- [x] Implement proper form validation feedback
+- [x] Add success/error toasts
 
 ### Performance & Testing
 - [ ] Implement basic performance monitoring

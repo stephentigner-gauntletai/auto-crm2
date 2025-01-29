@@ -36,6 +36,19 @@ export function PasswordForm() {
 
 		try {
 			const supabase = createClient();
+
+			// First verify the current password
+			const { error: signInError } = await supabase.auth.signInWithPassword({
+				email: (await supabase.auth.getUser()).data.user?.email || '',
+				password: data.current_password,
+			});
+
+			if (signInError) {
+				notify.error("Current password is incorrect");
+				return;
+			}
+
+			// Then update to the new password
 			const { error } = await supabase.auth.updateUser({
 				password: data.new_password,
 			});
