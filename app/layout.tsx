@@ -4,8 +4,8 @@ import { type Metadata } from 'next';
 
 import { AuthProvider } from "@/lib/auth/auth-context"
 import { ThemeProvider } from "@/components/theme/theme-provider"
+import { LoadingProvider } from "@/lib/providers/loading-provider"
 import { ErrorBoundary } from '@/components/error/error-boundary'
-import { Header } from '@/components/layout/header'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -29,12 +29,9 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<ErrorBoundary>
-						<AuthProvider>
-							<div className="relative min-h-screen flex flex-col">
-								<Header />
-								<main className="flex-1">{children}</main>
-							</div>
-						</AuthProvider>
+						<LoadingProvider>
+							<AuthProvider>{children}</AuthProvider>
+						</LoadingProvider>
 					</ErrorBoundary>
 				</ThemeProvider>
 			</body>
