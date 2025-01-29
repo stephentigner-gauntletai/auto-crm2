@@ -28,6 +28,8 @@ import {
 import { createClient } from "@/lib/supabase/client"
 import { ticketSchema, ticketUpdateSchema } from "@/lib/validations/ticket"
 import { Database } from "@/lib/database.types"
+import { commonAnimations, animations, getTransitionClasses } from '@/lib/utils/animations'
+import { cn } from '@/lib/utils'
 
 type Team = Database["public"]["Tables"]["teams"]["Row"]
 type Profile = Database["public"]["Tables"]["profiles"]["Row"]
@@ -82,8 +84,8 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 	}
 
 	return (
-		<div className="space-y-6">
-			<div>
+		<div className={cn("space-y-6", commonAnimations.pageEnter)}>
+			<div className={cn(animations.fadeIn, animations.duration300)}>
 				<h1 className="text-2xl font-bold tracking-tight">
 					{isCustomer ? 'Support Ticket Details' : 'Ticket Details'}
 				</h1>
@@ -116,18 +118,18 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
-					className="space-y-6"
+					className={cn("space-y-6", animations.fadeIn, animations.duration300, "delay-150")}
 				>
 					<FormField
 						control={form.control}
 						name="title"
 						render={({ field }) => (
-							<FormItem>
+							<FormItem className={getTransitionClasses(animations.duration200)}>
 								<FormLabel>Title</FormLabel>
 								<FormControl>
 									<Input {...field} disabled={isCustomer} />
 								</FormControl>
-								<FormMessage />
+								<FormMessage className={commonAnimations.formFeedbackEnter} />
 							</FormItem>
 						)}
 					/>
@@ -135,7 +137,7 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 						control={form.control}
 						name="description"
 						render={({ field }) => (
-							<FormItem>
+							<FormItem className={getTransitionClasses(animations.duration200)}>
 								<FormLabel>Description</FormLabel>
 								<FormControl>
 									<RichTextEditor
@@ -144,13 +146,18 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 										editable={!isCustomer}
 									/>
 								</FormControl>
-								<FormMessage />
+								<FormMessage className={commonAnimations.formFeedbackEnter} />
 							</FormItem>
 						)}
 					/>
 					{!isCustomer && (
 						<>
-							<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+							<div className={cn(
+								"grid grid-cols-1 md:grid-cols-3 gap-4",
+								animations.fadeIn,
+								animations.duration300,
+								"delay-300"
+							)}>
 								<FormField
 									control={form.control}
 									name="status"
@@ -268,7 +275,10 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 								control={form.control}
 								name="internal_notes"
 								render={({ field }) => (
-									<FormItem>
+									<FormItem className={cn(
+										getTransitionClasses(animations.duration200),
+										"delay-500"
+									)}>
 										<FormLabel>Internal Notes</FormLabel>
 										<FormControl>
 											<RichTextEditor
@@ -277,13 +287,17 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 												editable={!isCustomer}
 											/>
 										</FormControl>
-										<FormMessage />
+										<FormMessage className={commonAnimations.formFeedbackEnter} />
 									</FormItem>
 								)}
 							/>
 						</>
 					)}
-					<Button type="submit" disabled={loading || isCustomer}>
+					<Button 
+						type="submit" 
+						disabled={loading || isCustomer}
+						className={cn(animations.fadeIn, animations.duration300, "delay-700")}
+					>
 						{loading ? 'Saving...' : 'Save Changes'}
 					</Button>
 				</form>

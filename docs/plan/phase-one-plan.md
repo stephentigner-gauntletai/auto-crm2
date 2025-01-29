@@ -96,7 +96,7 @@ This plan outlines the development stages for implementing the core MVP features
 
 ### UI/UX Improvements
 - [x] Implement responsive design throughout
-- [ ] Add proper transitions and animations
+- [x] Add proper transitions and animations
 - [ ] Create skeleton loaders
 - [ ] Implement proper form validation feedback
 - [ ] Add success/error toasts

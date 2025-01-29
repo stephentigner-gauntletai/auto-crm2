@@ -13,6 +13,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Database } from '@/lib/database.types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { commonAnimations, animations } from '@/lib/utils/animations';
+import { cn } from '@/lib/utils';
 
 type Ticket = Database['public']['Tables']['tickets']['Row'];
 
@@ -68,8 +70,14 @@ export function TicketListTable({ tickets, isCustomer }: TicketListTableProps) {
 	// Mobile card view
 	const MobileView = () => (
 		<div className="space-y-4">
-			{tickets.map((ticket) => (
-				<Card key={ticket.id}>
+			{tickets.map((ticket, index) => (
+				<Card 
+					key={ticket.id}
+					className={cn(
+						commonAnimations.listItemEnter,
+						`delay-${Math.min(index * 100, 500)}`
+					)}
+				>
 					<CardHeader>
 						<CardTitle>
 							<Link
@@ -125,10 +133,10 @@ export function TicketListTable({ tickets, isCustomer }: TicketListTableProps) {
 
 	// Desktop table view
 	const DesktopView = () => (
-		<div className="rounded-md border">
+		<div className={cn("rounded-md border", animations.fadeIn, animations.duration300)}>
 			<Table>
 				<TableHeader>
-					<TableRow>
+					<TableRow className={cn(animations.fadeIn, animations.duration300)}>
 						<TableHead>Title</TableHead>
 						<TableHead>Status</TableHead>
 						{!isCustomer && <TableHead>Priority</TableHead>}
@@ -137,8 +145,14 @@ export function TicketListTable({ tickets, isCustomer }: TicketListTableProps) {
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{tickets.map((ticket) => (
-						<TableRow key={ticket.id}>
+					{tickets.map((ticket, index) => (
+						<TableRow 
+							key={ticket.id}
+							className={cn(
+								commonAnimations.listItemEnter,
+								`delay-${Math.min(index * 100, 500)}`
+							)}
+						>
 							<TableCell>
 								<Link
 									href={`/tickets/${ticket.id}`}
@@ -184,10 +198,10 @@ export function TicketListTable({ tickets, isCustomer }: TicketListTableProps) {
 
 	return (
 		<>
-			<div className="md:hidden">
+			<div className={cn("md:hidden", commonAnimations.pageEnter)}>
 				<MobileView />
 			</div>
-			<div className="hidden md:block">
+			<div className={cn("hidden md:block", commonAnimations.pageEnter)}>
 				<DesktopView />
 			</div>
 		</>
