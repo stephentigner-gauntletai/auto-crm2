@@ -29,7 +29,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { createClient } from "@/lib/supabase/client"
 import { teamUpdateSchema } from "@/lib/validations/team"
 import { Database } from "@/lib/database.types"
-import { Pencil } from "lucide-react"
+import { Loader2, Pencil } from "lucide-react"
 
 type Team = Database["public"]["Tables"]["teams"]["Row"]
 type FormData = z.infer<typeof teamUpdateSchema>
@@ -40,6 +40,7 @@ interface EditTeamDialogProps {
 
 export function EditTeamDialog({ team }: EditTeamDialogProps) {
 	const [open, setOpen] = useState(false)
+	const [isSubmitting, setIsSubmitting] = useState(false)
 	const router = useRouter()
 	const form = useForm<FormData>({
 		resolver: zodResolver(teamUpdateSchema),
@@ -51,6 +52,7 @@ export function EditTeamDialog({ team }: EditTeamDialogProps) {
 
 	async function onSubmit(data: FormData) {
 		try {
+			setIsSubmitting(true)
 			const supabase = createClient()
 			const { error } = await supabase
 				.from("teams")
@@ -63,6 +65,8 @@ export function EditTeamDialog({ team }: EditTeamDialogProps) {
 			router.refresh()
 		} catch (error) {
 			console.error("Error updating team:", error)
+		} finally {
+			setIsSubmitting(false)
 		}
 	}
 
@@ -123,10 +127,23 @@ export function EditTeamDialog({ team }: EditTeamDialogProps) {
 								type="button"
 								variant="outline"
 								onClick={() => setOpen(false)}
+								disabled={isSubmitting}
 							>
 								Cancel
 							</Button>
-							<Button type="submit">Save Changes</Button>
+							<Button 
+								type="submit"
+								disabled={isSubmitting}
+							>
+								{isSubmitting ? (
+									<>
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+										Saving...
+									</>
+								) : (
+									"Save Changes"
+								)}
+							</Button>
 						</DialogFooter>
 					</form>
 				</Form>

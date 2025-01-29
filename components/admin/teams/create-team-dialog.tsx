@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import { Loader2 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -33,6 +34,7 @@ type FormData = z.infer<typeof teamSchema>
 
 export function CreateTeamDialog() {
 	const [open, setOpen] = useState(false)
+	const [isSubmitting, setIsSubmitting] = useState(false)
 	const router = useRouter()
 	const supabase = createClient()
 
@@ -47,6 +49,7 @@ export function CreateTeamDialog() {
 
 	async function onSubmit(data: FormData) {
 		try {
+			setIsSubmitting(true)
 			const { data: { user }, error: userError } = await supabase.auth.getUser()
 			if (userError) throw userError
 			if (!user) throw new Error("No user found")
@@ -63,6 +66,8 @@ export function CreateTeamDialog() {
 			router.refresh()
 		} catch (error) {
 			console.error("Error creating team:", error)
+		} finally {
+			setIsSubmitting(false)
 		}
 	}
 
@@ -121,10 +126,23 @@ export function CreateTeamDialog() {
 								type="button"
 								variant="outline"
 								onClick={() => setOpen(false)}
+								disabled={isSubmitting}
 							>
 								Cancel
 							</Button>
-							<Button type="submit">Create</Button>
+							<Button 
+								type="submit"
+								disabled={isSubmitting}
+							>
+								{isSubmitting ? (
+									<>
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+										Creating...
+									</>
+								) : (
+									"Create"
+								)}
+							</Button>
 						</DialogFooter>
 					</form>
 				</Form>
