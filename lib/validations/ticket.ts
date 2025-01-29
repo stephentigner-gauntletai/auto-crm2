@@ -10,10 +10,9 @@ export const ticketSchema = z.object({
 		.max(10000, messages.max('Description', 10000)),
 	status: z.enum(['open', 'in_progress', 'resolved', 'closed']),
 	priority: z.enum(['low', 'medium', 'high', 'urgent']),
-	category: z.string().min(1, messages.required),
-	assignee_id: z.string().uuid().optional(),
-	team_id: z.string().uuid(),
-	customer_id: z.string().uuid(),
+	team_id: z.string().uuid().nullable(),
+	assigned_to: z.string().uuid().nullable(),
+	internal_notes: z.string().nullable(),
 });
 
 export const ticketUpdateSchema = ticketSchema.partial();

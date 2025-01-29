@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Database } from '@/lib/database.types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type Ticket = Database['public']['Tables']['tickets']['Row'];
 
@@ -64,7 +65,66 @@ export function TicketListTable({ tickets, isCustomer }: TicketListTableProps) {
 		}
 	}
 
-	return (
+	// Mobile card view
+	const MobileView = () => (
+		<div className="space-y-4">
+			{tickets.map((ticket) => (
+				<Card key={ticket.id}>
+					<CardHeader>
+						<CardTitle>
+							<Link
+								href={`/tickets/${ticket.id}`}
+								className="text-blue-600 hover:text-blue-800 hover:underline"
+							>
+								{ticket.title}
+							</Link>
+						</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-2">
+						<div className="flex items-center justify-between">
+							<span className="text-sm text-muted-foreground">Status</span>
+							<Badge
+								className={`${getStatusColor(ticket.status)} border-none`}
+								variant="outline"
+							>
+								{getStatusLabel(ticket.status)}
+							</Badge>
+						</div>
+						{!isCustomer && (
+							<div className="flex items-center justify-between">
+								<span className="text-sm text-muted-foreground">Priority</span>
+								<Badge
+									className={`${getPriorityColor(ticket.priority)} border-none`}
+									variant="outline"
+								>
+									{ticket.priority}
+								</Badge>
+							</div>
+						)}
+						<div className="flex items-center justify-between">
+							<span className="text-sm text-muted-foreground">Created</span>
+							<span className="text-sm">
+								{formatDistanceToNow(new Date(ticket.created_at), {
+									addSuffix: true,
+								})}
+							</span>
+						</div>
+						<div className="flex items-center justify-between">
+							<span className="text-sm text-muted-foreground">Updated</span>
+							<span className="text-sm">
+								{formatDistanceToNow(new Date(ticket.updated_at), {
+									addSuffix: true,
+								})}
+							</span>
+						</div>
+					</CardContent>
+				</Card>
+			))}
+		</div>
+	);
+
+	// Desktop table view
+	const DesktopView = () => (
 		<div className="rounded-md border">
 			<Table>
 				<TableHeader>
@@ -120,5 +180,16 @@ export function TicketListTable({ tickets, isCustomer }: TicketListTableProps) {
 				</TableBody>
 			</Table>
 		</div>
+	);
+
+	return (
+		<>
+			<div className="md:hidden">
+				<MobileView />
+			</div>
+			<div className="hidden md:block">
+				<DesktopView />
+			</div>
+		</>
 	);
 } 

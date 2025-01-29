@@ -26,7 +26,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client"
-import { updateTicketSchema, ticketStatusEnum } from "@/lib/validations/ticket"
+import { ticketSchema, ticketUpdateSchema } from "@/lib/validations/ticket"
 import { Database } from "@/lib/database.types"
 
 type Team = Database["public"]["Tables"]["teams"]["Row"]
@@ -36,8 +36,8 @@ type Ticket = Database["public"]["Tables"]["tickets"]["Row"] & {
 	assignee: Pick<Profile, "id" | "email" | "full_name"> | null
 	creator: Pick<Profile, "id" | "email" | "full_name"> | null
 }
-type FormData = z.infer<typeof updateTicketSchema>
-type TicketStatus = z.infer<typeof ticketStatusEnum>
+type FormData = z.infer<typeof ticketUpdateSchema>
+type TicketStatus = z.infer<typeof ticketSchema.shape.status>
 
 interface TicketDetailsProps {
 	ticket: Ticket
@@ -50,14 +50,15 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 	const [loading, setLoading] = useState(false)
 	const router = useRouter()
 	const form = useForm<FormData>({
-		resolver: zodResolver(updateTicketSchema),
+		resolver: zodResolver(ticketUpdateSchema),
 		defaultValues: {
 			title: ticket.title,
 			description: ticket.description,
 			status: ticket.status as TicketStatus,
-			team_id: ticket.team_id || undefined,
-			assigned_to: ticket.assigned_to || undefined,
-			internal_notes: ticket.internal_notes || "",
+			priority: ticket.priority as 'low' | 'medium' | 'high' | 'urgent',
+			team_id: ticket.team_id,
+			assigned_to: ticket.assigned_to,
+			internal_notes: ticket.internal_notes || '',
 		},
 	})
 
@@ -86,7 +87,7 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 				<h1 className="text-2xl font-bold tracking-tight">
 					{isCustomer ? 'Support Ticket Details' : 'Ticket Details'}
 				</h1>
-				<div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
+				<div className="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground">
 					<p>
 						Created by{" "}
 						{ticket.creator?.full_name || ticket.creator?.email}{" "}
@@ -94,7 +95,7 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 							addSuffix: true,
 						})}
 					</p>
-					<p>•</p>
+					<p className="hidden sm:block">•</p>
 					<p>
 						Last updated{" "}
 						{formatDistanceToNow(new Date(ticket.updated_at), {
@@ -103,7 +104,7 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 					</p>
 					{!isCustomer && ticket.assignee && (
 						<>
-							<p>•</p>
+							<p className="hidden sm:block">•</p>
 							<p>
 								Assigned to{" "}
 								{ticket.assignee.full_name || ticket.assignee.email}
@@ -138,7 +139,7 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 								<FormLabel>Description</FormLabel>
 								<FormControl>
 									<RichTextEditor
-										value={field.value}
+										value={field.value || ''}
 										onChange={field.onChange}
 										editable={!isCustomer}
 									/>
@@ -149,7 +150,7 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 					/>
 					{!isCustomer && (
 						<>
-							<div className="grid grid-cols-3 gap-4">
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 								<FormField
 									control={form.control}
 									name="status"
@@ -166,21 +167,36 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													<SelectItem value="open">
-														Open
-													</SelectItem>
-													<SelectItem value="in_progress">
-														In Progress
-													</SelectItem>
-													<SelectItem value="waiting_on_customer">
-														Waiting on Customer
-													</SelectItem>
-													<SelectItem value="resolved">
-														Resolved
-													</SelectItem>
-													<SelectItem value="closed">
-														Closed
-													</SelectItem>
+													<SelectItem value="open">Open</SelectItem>
+													<SelectItem value="in_progress">In Progress</SelectItem>
+													<SelectItem value="resolved">Resolved</SelectItem>
+													<SelectItem value="closed">Closed</SelectItem>
+												</SelectContent>
+											</Select>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="priority"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Priority</FormLabel>
+											<Select
+												onValueChange={field.onChange}
+												defaultValue={field.value}
+											>
+												<FormControl>
+													<SelectTrigger>
+														<SelectValue placeholder="Select priority" />
+													</SelectTrigger>
+												</FormControl>
+												<SelectContent>
+													<SelectItem value="low">Low</SelectItem>
+													<SelectItem value="medium">Medium</SelectItem>
+													<SelectItem value="high">High</SelectItem>
+													<SelectItem value="urgent">Urgent</SelectItem>
 												</SelectContent>
 											</Select>
 											<FormMessage />
@@ -195,7 +211,7 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 											<FormLabel>Assign to Team</FormLabel>
 											<Select
 												onValueChange={field.onChange}
-												defaultValue={field.value}
+												defaultValue={field.value || undefined}
 											>
 												<FormControl>
 													<SelectTrigger>
@@ -225,7 +241,7 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 											<FormLabel>Assign to Agent</FormLabel>
 											<Select
 												onValueChange={field.onChange}
-												defaultValue={field.value}
+												defaultValue={field.value || undefined}
 											>
 												<FormControl>
 													<SelectTrigger>
@@ -238,8 +254,7 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 															key={agent.id}
 															value={agent.id}
 														>
-															{agent.full_name ||
-																agent.email}
+															{agent.full_name || agent.email}
 														</SelectItem>
 													))}
 												</SelectContent>
@@ -257,22 +272,20 @@ export function TicketDetails({ ticket, teams, agents, isCustomer }: TicketDetai
 										<FormLabel>Internal Notes</FormLabel>
 										<FormControl>
 											<RichTextEditor
-												value={field.value || ""}
+												value={field.value || ''}
 												onChange={field.onChange}
-												placeholder="Add internal notes (only visible to agents)"
+												editable={!isCustomer}
 											/>
 										</FormControl>
 										<FormMessage />
 									</FormItem>
 								)}
 							/>
-							<div className="flex justify-end">
-								<Button type="submit" disabled={loading}>
-									{loading ? "Saving..." : "Save Changes"}
-								</Button>
-							</div>
 						</>
 					)}
+					<Button type="submit" disabled={loading || isCustomer}>
+						{loading ? 'Saving...' : 'Save Changes'}
+					</Button>
 				</form>
 			</Form>
 		</div>
