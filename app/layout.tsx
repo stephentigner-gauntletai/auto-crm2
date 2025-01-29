@@ -5,6 +5,7 @@ import { type Metadata } from 'next';
 import { AuthProvider } from "@/lib/auth/auth-context"
 import { ThemeProvider } from "@/components/theme/theme-provider"
 import { LoadingProvider } from "@/lib/providers/loading-provider"
+import { NotificationProvider } from "@/lib/providers/notification-provider"
 import { ErrorBoundary } from '@/components/error/error-boundary'
 
 const inter = Inter({ subsets: ["latin"] })
@@ -33,6 +34,7 @@ export default function RootLayout({
 							<AuthProvider>{children}</AuthProvider>
 						</LoadingProvider>
 					</ErrorBoundary>
+					<NotificationProvider />
 				</ThemeProvider>
 			</body>
 		</html>
