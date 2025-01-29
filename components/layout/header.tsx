@@ -19,9 +19,14 @@ export function Header() {
 					{user ? (
 						<>
 							{isCustomer && (
-								<Link href="/dashboard" className="text-sm font-medium">
-									Dashboard
-								</Link>
+								<>
+									<Link href="/dashboard" className="text-sm font-medium">
+										Dashboard
+									</Link>
+									<Link href="/feedback" className="text-sm font-medium">
+										Share Feedback
+									</Link>
+								</>
 							)}
 							<Link href="/tickets" className="text-sm font-medium">
 								Tickets
