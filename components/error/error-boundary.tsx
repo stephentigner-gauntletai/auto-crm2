@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { handleError, type AppError } from '@/lib/utils/error-utils';
+import logger from '@/lib/utils/logger';
 
 interface Props {
 	children: ReactNode;
@@ -26,8 +27,10 @@ export class ErrorBoundary extends Component<Props, State> {
 	}
 
 	componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-		// Log the error to an error reporting service
-		console.error('Uncaught error:', error, errorInfo);
+		// Log the error to our logger service
+		logger.error('Uncaught error in React component', error, {
+			componentStack: errorInfo.componentStack,
+		});
 	}
 
 	render() {
