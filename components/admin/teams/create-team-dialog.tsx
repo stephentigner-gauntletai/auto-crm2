@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 import { Loader2 } from "lucide-react"
+import { notify } from "@/lib/utils/notifications"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -51,21 +52,32 @@ export function CreateTeamDialog() {
 		try {
 			setIsSubmitting(true)
 			const { data: { user }, error: userError } = await supabase.auth.getUser()
-			if (userError) throw userError
-			if (!user) throw new Error("No user found")
+			if (userError) {
+				notify.error("Failed to get user information. Please try again.")
+				return
+			}
+			if (!user) {
+				notify.error("No user found. Please sign in again.")
+				return
+			}
 
 			const { error } = await supabase.from("teams").insert({
 				...data,
 				created_by: user.id,
 			})
 
-			if (error) throw error
+			if (error) {
+				notify.error(error)
+				return
+			}
 
 			setOpen(false)
 			form.reset()
 			router.refresh()
+			notify.success("Team created successfully")
 		} catch (error) {
 			console.error("Error creating team:", error)
+			notify.error("Failed to create team. Please try again.")
 		} finally {
 			setIsSubmitting(false)
 		}

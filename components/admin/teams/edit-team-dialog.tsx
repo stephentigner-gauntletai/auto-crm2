@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import { notify } from "@/lib/utils/notifications"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -42,6 +43,7 @@ export function EditTeamDialog({ team }: EditTeamDialogProps) {
 	const [open, setOpen] = useState(false)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const router = useRouter()
+
 	const form = useForm<FormData>({
 		resolver: zodResolver(teamUpdateSchema),
 		defaultValues: {
@@ -59,12 +61,17 @@ export function EditTeamDialog({ team }: EditTeamDialogProps) {
 				.update(data)
 				.eq("id", team.id)
 
-			if (error) throw error
+			if (error) {
+				notify.error(error)
+				return
+			}
 
 			setOpen(false)
 			router.refresh()
+			notify.success("Team updated successfully")
 		} catch (error) {
 			console.error("Error updating team:", error)
+			notify.error("Failed to update team. Please try again.")
 		} finally {
 			setIsSubmitting(false)
 		}
