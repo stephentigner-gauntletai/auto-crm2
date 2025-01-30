@@ -13,3 +13,7 @@ Then this prompt to start building the system.
 A starter prompt for starting a new composer session (customize as needed):
 
 > We're creating a CRM (like Zendesk) and are building out our MVP with the most important and basic features for now. The original client requirements are in @system-reqs.md , with technical requirements in @technical-reqs.md . Coding standards are in @standards.md . We have a checklist of tasks to complete located in @phase-one-plan.md .
+
+New starter prompt for building AI features:
+
+> We're creating a CRM (like Zendesk) and have built out our MVP with the most important and basic features for now. The original client requirements are in @system-reqs.md , with technical requirements in @technical-reqs.md . Coding standards are in @standards.md . We are building an agent that can perform various tasks for us in the system. We have a design for the agent in @agent-design.md .
