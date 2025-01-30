@@ -106,9 +106,9 @@ This plan outlines the development stages for implementing the core MVP features
 - [x] Add error tracking
 - [x] Create basic test suite
 - [x] Optimize database queries
-- [ ] Add basic security measures
+- [x] Add basic security measures
 
-## Testing & Deployment Checklist
+## Testing & Deployment Checklist (TODO: Come back to this later)
 - [ ] Set up development environment
 - [ ] Create staging environment
 - [ ] Implement CI/CD pipeline
