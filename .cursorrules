@@ -24,3 +24,6 @@ where `<component>` is the name of the component you want to add.
 `shadcn-ui` DOES NOT EXIST!! THE CORRECT COMMAND IS `shadcn`.
 
 Coding standards are in the docs/standards.md file.
+
+The params/searchParams of an async page function in Next *have* to be awaited!
+STOP REMOVING THE AWAIT!

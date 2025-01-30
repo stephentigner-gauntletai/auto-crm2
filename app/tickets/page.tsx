@@ -9,12 +9,15 @@ interface TicketsPageProps {
 		status?: string;
 		priority?: string;
 		team_id?: string;
+		page?: string;
 	};
 }
 
 export default async function TicketsPage({ searchParams }: TicketsPageProps) {
 	const supabase = await createClient();
-	const { status, priority, team_id } = await searchParams;
+	const { status, priority, team_id, page = '1' } = await searchParams;
+	const currentPage = parseInt(page);
+	const pageSize = 10;
 
 	// Get user role
 	const {
@@ -38,7 +41,7 @@ export default async function TicketsPage({ searchParams }: TicketsPageProps) {
 		team:teams(id, name),
 		assignee:profiles!tickets_assigned_to_fkey(id, email, full_name),
 		creator:profiles!tickets_created_by_fkey(id, email, full_name)
-	`);
+	`, { count: 'exact' });
 
 	// Apply role-based filters
 	if (isCustomer) {
@@ -56,8 +59,15 @@ export default async function TicketsPage({ searchParams }: TicketsPageProps) {
 		query = query.eq('team_id', team_id);
 	}
 
-	// Execute query
-	const { data: tickets, error } = await query;
+	// Apply ordering before pagination
+	query = query.order('created_at', { ascending: false });
+
+	// Get the count first
+	const { count } = await query;
+
+	// Then apply pagination
+	const { data: tickets, error } = await query
+		.range((currentPage - 1) * pageSize, currentPage * pageSize - 1);
 
 	if (error) {
 		return (
@@ -66,6 +76,8 @@ export default async function TicketsPage({ searchParams }: TicketsPageProps) {
 			</ProtectedLayout>
 		);
 	}
+
+	const totalPages = count ? Math.ceil(count / pageSize) : 1;
 
 	return (
 		<ProtectedLayout>
@@ -82,7 +94,13 @@ export default async function TicketsPage({ searchParams }: TicketsPageProps) {
 					</Link>
 				</div>
 				<TicketFilters teams={teams || []} isCustomer={isCustomer} />
-				<TicketListTable tickets={tickets || []} isCustomer={isCustomer} />
+				<TicketListTable 
+					tickets={tickets || []} 
+					isCustomer={isCustomer} 
+					currentPage={currentPage}
+					totalPages={totalPages}
+					pageSize={pageSize}
+				/>
 			</div>
 		</ProtectedLayout>
 	);

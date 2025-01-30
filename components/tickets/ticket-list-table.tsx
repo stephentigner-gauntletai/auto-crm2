@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
 import {
 	Table,
@@ -15,15 +16,36 @@ import { Database } from '@/lib/database.types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { commonAnimations, animations } from '@/lib/utils/animations';
 import { cn } from '@/lib/utils';
+import {
+	Pagination,
+	PaginationContent,
+	PaginationEllipsis,
+	PaginationItem,
+	PaginationLink,
+	PaginationNext,
+	PaginationPrevious,
+} from "@/components/ui/pagination";
 
 type Ticket = Database['public']['Tables']['tickets']['Row'];
 
 interface TicketListTableProps {
 	tickets: Ticket[];
 	isCustomer?: boolean;
+	currentPage: number;
+	totalPages: number;
+	pageSize: number;
 }
 
-export function TicketListTable({ tickets, isCustomer }: TicketListTableProps) {
+export function TicketListTable({ tickets, isCustomer, currentPage, totalPages, pageSize }: TicketListTableProps) {
+	const router = useRouter();
+	const searchParams = useSearchParams();
+
+	function handlePageChange(page: number) {
+		const params = new URLSearchParams(searchParams.toString());
+		params.set('page', page.toString());
+		router.push(`/tickets?${params.toString()}`);
+	}
+
 	function getStatusColor(status: string) {
 		switch (status) {
 			case 'open':
@@ -196,14 +218,58 @@ export function TicketListTable({ tickets, isCustomer }: TicketListTableProps) {
 		</div>
 	);
 
+	const PaginationControls = () => (
+		<Pagination>
+			<PaginationContent>
+				<PaginationItem>
+					<PaginationPrevious 
+						href="#"
+						onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+							e.preventDefault();
+							if (currentPage > 1) handlePageChange(currentPage - 1);
+						}}
+					/>
+				</PaginationItem>
+				{Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+					<PaginationItem key={page}>
+						<PaginationLink
+							href="#"
+							onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+								e.preventDefault();
+								handlePageChange(page);
+							}}
+							isActive={page === currentPage}
+						>
+							{page}
+						</PaginationLink>
+					</PaginationItem>
+				))}
+				<PaginationItem>
+					<PaginationNext 
+						href="#"
+						onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+							e.preventDefault();
+							if (currentPage < totalPages) handlePageChange(currentPage + 1);
+						}}
+					/>
+				</PaginationItem>
+			</PaginationContent>
+		</Pagination>
+	);
+
 	return (
-		<>
+		<div className="space-y-4">
 			<div className={cn("md:hidden", commonAnimations.pageEnter)}>
 				<MobileView />
 			</div>
 			<div className={cn("hidden md:block", commonAnimations.pageEnter)}>
 				<DesktopView />
 			</div>
-		</>
+			{totalPages > 1 && (
+				<div className="flex justify-center mt-4">
+					<PaginationControls />
+				</div>
+			)}
+		</div>
 	);
 } 
