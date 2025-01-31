@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { AgentChat } from "@/components/agent/agent-chat";
-import { initializeTools } from "@/lib/agent/langgraph/tools";
 import { ProtectedLayout } from "@/components/auth/protected-layout";
 
 export default async function AgentPage() {
@@ -26,9 +25,6 @@ export default async function AgentPage() {
 	if (!isStaff) {
 		redirect("/");
 	}
-
-	// Initialize tools on the server side
-	await initializeTools(user.id, profile.role);
 
 	return (
 		<ProtectedLayout>

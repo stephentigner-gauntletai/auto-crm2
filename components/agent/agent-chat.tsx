@@ -140,17 +140,35 @@ export function AgentChat({ userId, userRole }: AgentChatProps) {
 					const { taskName, update } = JSON.parse(line);
 					if (taskName === "agent") continue;
 
+					console.log('Received message:', update);
+
 					const message = update as any;
+					let messageContent = '';
+
+					// Handle different message content formats
+					if (typeof message.content === 'string') {
+						messageContent = message.content;
+					} else if (message.kwargs?.content) {
+						messageContent = message.kwargs.content;
+					} else if (message.content?.text) {
+						messageContent = message.content.text;
+					} else {
+						messageContent = JSON.stringify(message.content);
+					}
+
+					console.log('Processed content:', messageContent);
+
 					const chatMessage: ChatMessage = {
 						type: message.type === "ai" ? 'ai' : 
 							message.type === "human" ? 'human' : 'tool',
-						content: message.content as string,
+						content: messageContent,
 					};
 
 					if (message.type === "ai" && message.additional_kwargs?.tool_calls?.length) {
 						chatMessage.tool_calls = message.additional_kwargs.tool_calls;
 					}
 
+					console.log('Final chat message:', chatMessage);
 					setMessages((prev) => [...prev, chatMessage]);
 				}
 			}
@@ -238,6 +256,4 @@ export function AgentChat({ userId, userRole }: AgentChatProps) {
 			</TabsContent>
 		</Tabs>
 	);
-
-	return <div>Hello</div>;
 } 

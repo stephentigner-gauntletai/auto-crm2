@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { agent } from "@/lib/agent/langgraph/agent";
 import { HumanMessage } from "@langchain/core/messages";
 import { createClient } from "@/lib/supabase/server";
+import { initializeTools } from "@/lib/agent/langgraph/tools";
 
 export async function POST(request: Request) {
 	try {
@@ -28,6 +29,9 @@ export async function POST(request: Request) {
 
 		// Get request body
 		const { message, threadId } = await request.json();
+
+		// Initialize tools with user context
+		await initializeTools(user.id, profile.role);
 
 		// Create stream
 		const stream = await agent.stream(
@@ -57,6 +61,7 @@ export async function POST(request: Request) {
 					}
 					controller.close();
 				} catch (error) {
+					console.error("Error in stream processing:", error);
 					controller.error(error);
 				}
 			},
@@ -72,6 +77,9 @@ export async function POST(request: Request) {
 		});
 	} catch (error) {
 		console.error("Error in agent stream:", error);
-		return new NextResponse("Internal Server Error", { status: 500 });
+		return new NextResponse(
+			`Internal Server Error: ${error instanceof Error ? error.message : 'Unknown error'}`, 
+			{ status: 500 }
+		);
 	}
 } 
