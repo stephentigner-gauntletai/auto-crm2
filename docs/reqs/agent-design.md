@@ -16,3 +16,19 @@ What I'd like to do is build an agent that can perform various tasks for us in t
 
 Each of these tasks should be a different tool call for the agent.
 Each task should be encapsulated in a function that can be called by the agent.
+
+---
+
+Agent UI design
+
+* Accessible via a link/button in the header
+	* Only accesible to staff (agents and admins)
+* Chat-based interface with history
+* Each conversation is a new thread
+* Ability to view past conversations that are still in memory
+* Ability to start a new conversation
+* User can request agent to perform any of the tasks our tools can perform that they have permission to do
+* If the user doesn't have permission to do something, the agent should say so
+* If there is not a tool that can do what the user wants, the agent should say so
+	* But don't use the word "tool" in the response, just apologize and say something like "I don't know how to do that"
+
