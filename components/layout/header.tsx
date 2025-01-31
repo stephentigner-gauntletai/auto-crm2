@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/auth/auth-context';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Menu } from 'lucide-react';
+import { AgentButton } from '@/components/header/agent-button';
 import {
 	Sheet,
 	SheetContent,
@@ -16,6 +17,7 @@ import {
 export function Header() {
 	const { user, signOut, profile } = useAuth();
 	const isCustomer = profile?.role === 'customer';
+	const isStaff = profile?.role === 'agent' || profile?.role === 'admin';
 
 	const NavItems = () => (
 		<>
@@ -80,12 +82,18 @@ export function Header() {
 				{/* Desktop Navigation */}
 				<nav className="hidden md:flex items-center space-x-4">
 					<NavItems />
-					<ThemeToggle />
+					<div className="flex items-center space-x-2">
+						<AgentButton isStaff={isStaff} />
+						<ThemeToggle />
+					</div>
 				</nav>
 
 				{/* Mobile Navigation */}
 				<div className="flex items-center space-x-4 md:hidden">
-					<ThemeToggle />
+					<div className="flex items-center space-x-2">
+						<AgentButton isStaff={isStaff} />
+						<ThemeToggle />
+					</div>
 					<Sheet>
 						<SheetTrigger asChild>
 							<Button variant="ghost" size="icon">
