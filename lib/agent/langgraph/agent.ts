@@ -1,11 +1,17 @@
 import { type BaseMessageLike } from "@langchain/core/messages";
-import { entrypoint, addMessages } from "@langchain/langgraph";
+import { entrypoint, addMessages, MemorySaver, getPreviousState } from "@langchain/langgraph";
 import { callModel, callTool } from "./tasks";
+
+// Initialize memory saver for thread-level persistence
+const checkpointer = new MemorySaver();
 
 export const agent = entrypoint({
 	name: "agent",
+	checkpointer,
 }, async (messages: BaseMessageLike[]) => {
-	let currentMessages = messages;
+	// Get previous messages from the thread if they exist
+	const previous = getPreviousState<BaseMessageLike[]>() ?? [];
+	let currentMessages = addMessages(previous, messages);
 	let llmResponse = await callModel(currentMessages);
 
 	while (true) {
@@ -27,5 +33,11 @@ export const agent = entrypoint({
 		llmResponse = await callModel(currentMessages);
 	}
 
-	return llmResponse;
+	// Append final response for storage
+	currentMessages = addMessages(currentMessages, llmResponse);
+
+	return entrypoint.final({
+		value: llmResponse,
+		save: currentMessages,
+	});
 }); 
