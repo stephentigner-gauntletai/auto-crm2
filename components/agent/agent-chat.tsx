@@ -107,7 +107,7 @@ export function AgentChat({ userId, userRole }: AgentChatProps) {
 		setIsLoading(true);
 
 		try {
-			const response = await fetch("/api/agent", {
+			const response = await fetch(`${window.location.origin}/api/agent`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -119,7 +119,8 @@ export function AgentChat({ userId, userRole }: AgentChatProps) {
 			});
 
 			if (!response.ok) {
-				throw new Error("Failed to get response from agent");
+				const errorText = await response.text();
+				throw new Error(`Failed to get response from agent: ${errorText}`);
 			}
 
 			const reader = response.body?.getReader();
@@ -139,15 +140,15 @@ export function AgentChat({ userId, userRole }: AgentChatProps) {
 					const { taskName, update } = JSON.parse(line);
 					if (taskName === "agent") continue;
 
-					const message = update as BaseMessage;
+					const message = update as any;
 					const chatMessage: ChatMessage = {
-						type: isAIMessage(message) ? 'ai' : 
-							message instanceof HumanMessage ? 'human' : 'tool',
+						type: message.type === "ai" ? 'ai' : 
+							message.type === "human" ? 'human' : 'tool',
 						content: message.content as string,
 					};
 
-					if (isAIMessage(message) && message.tool_calls?.length) {
-						chatMessage.tool_calls = message.tool_calls;
+					if (message.type === "ai" && message.additional_kwargs?.tool_calls?.length) {
+						chatMessage.tool_calls = message.additional_kwargs.tool_calls;
 					}
 
 					setMessages((prev) => [...prev, chatMessage]);
